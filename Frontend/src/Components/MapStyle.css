@@ -1,0 +1,220 @@
+/* MapStyle.css — Aesthetic Dating/Friendship Style */
+.map-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(to bottom right, #ffe4ec, #e0c3fc);
+  font-family: 'Inter', sans-serif;
+  padding-top: 60px;
+  box-sizing: border-box;
+}
+
+.map-container {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 60px); /* Adjust based on your navbar height */
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.map-box {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+}
+
+.loading-text,
+.error-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.2rem;
+  color: #d63384;
+  font-weight: 500;
+}
+
+.error-text {
+  color: #e63946;
+}
+
+.profile-popup-container {
+  min-width: 270px;
+  max-width: 320px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.profile-popup {
+  padding: 16px;
+  background: linear-gradient(to bottom, #fff0f5, #fce4ec);
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(255, 192, 203, 0.25);
+}
+
+.profile-name {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #d63384;
+  text-align: center;
+}
+
+.profile-pic-container {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.profile-pic {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ffc0cb;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.profile-details {
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.profile-details p {
+  margin: 6px 0;
+}
+
+.profile-bio,
+.profile-interests,
+.profile-activities {
+  margin-top: 12px;
+}
+
+.profile-bio p {
+  font-style: italic;
+  margin-top: 6px;
+  color: #6c567b;
+}
+
+.profile-interests ul,
+.profile-activities ul {
+  margin: 6px 0;
+  padding-left: 18px;
+  color: #555;
+}
+
+.profile-interests li::before,
+.profile-activities li::before {
+  content: " ";
+  margin-right: 4px;
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.profile-button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.3s ease-in-out;
+}
+
+.view-profile {
+  background-color: #ff4d6d;
+  color: white;
+}
+
+.view-profile:hover {
+  background-color: #e0415d;
+}
+
+.send-message {
+  background-color: #6a4c93;
+  color: white;
+}
+
+.send-message:hover {
+  background-color: #573a78;
+}
+
+/* Legend styling */
+.map-legend {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  max-width: 240px;
+  font-size: 0.85rem;
+}
+
+.map-legend h4 {
+  margin: 0 0 10px 0;
+  font-size: 1rem;
+  text-align: center;
+  color: #d63384;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+  font-weight: 600;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+  color: #444;
+}
+
+.legend-color {
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  margin-right: 10px;
+  border: 1px solid #fff;
+  box-shadow: 0 0 2px rgba(0,0,0,0.2);
+}
+
+/* Softer, pastel marker colors */
+.legend-color.very-high {
+  background-color: #ff4d6d; /* Strawberry Pink */
+}
+
+.legend-color.high {
+  background-color: #ff85a2; /* Blush Pink */
+}
+
+.legend-color.medium {
+  background-color: #ffd6a5; /* Peach */
+}
+
+.legend-color.low {
+  background-color: #fdffb6; /* Soft Yellow */
+}
+
+.legend-color.very-low {
+  background-color: #caffbf; /* Mint Green */
+}
+
+.legend-color.you {
+  background-color: #6a4c93; /* Deep Lavender */
+  border: 2px solid white;
+}
+.marker-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}

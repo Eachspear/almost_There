@@ -13,7 +13,7 @@
     "@mui/icons-material": "^6.4.7",
     "@mui/material": "^6.4.7",
     "@radix-ui/react-slider": "^1.2.3",
-    "@react-google-maps/api": "^2.20.5",
+    "@react-google-maps/api": "^2.20.7",
     "@shadcn/ui": "^0.0.4",
     "@tailwindcss/vite": "^4.0.4",
     "animate.css": "^4.1.1",

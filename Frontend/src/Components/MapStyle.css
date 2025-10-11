@@ -218,3 +218,30 @@
   border: 3px solid white;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
 }
+
+/* --- Fix: Ensure Navbar and Dropdowns appear above Map --- */
+
+/* Keep map behind navbar */
+.map-container,
+.leaflet-container {
+  position: relative;
+  z-index: 1 !important;
+}
+
+/* Prevent Leaflet map layers from overlapping UI */
+.leaflet-pane,
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 1 !important;
+}
+
+/* Allow Leaflet controls (zoom buttons, etc.) to stay clickable */
+.leaflet-control {
+  z-index: 10 !important;
+}
+
+/* Ensure Navbar dropdown menus (profile, notification) appear above map */
+.dropdown-menu {
+  position: absolute;
+  z-index: 9999 !important;
+}

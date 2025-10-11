@@ -6,11 +6,12 @@ import React from "react";
 import axios from "axios";
 import Navbar from "./Navbar";
 import "./MapStyle.css";
+import { useNavigate } from "react-router-dom";
 
-// Creating icons for different similarity levels
+// 🎨 Create map marker icons for similarity levels
 const createDivIcon = (hexColor) =>
   L.divIcon({
-    className: 'custom-pastel-marker',
+    className: "custom-pastel-marker",
     html: `<div style="background-color: ${hexColor};" class="marker-dot"></div>`,
     iconSize: [36, 36],
     iconAnchor: [18, 36],
@@ -20,11 +21,11 @@ const createDivIcon = (hexColor) =>
 export const userIcon = createDivIcon("#6a4c93"); // Deep lavender
 
 export const similarityMarkers = {
-  "very-high": createDivIcon("#ff4d6d"),   // Strawberry pink
-  "high": createDivIcon("#ff85a2"),        // Blush pink
-  "medium": createDivIcon("#ffd6a5"),      // Peach
-  "low": createDivIcon("#fdffb6"),         // Soft yellow
-  "very-low": createDivIcon("#caffbf"),    // Mint green
+  "very-high": createDivIcon("#ff4d6d"), // Strawberry pink
+  high: createDivIcon("#ff85a2"), // Blush pink
+  medium: createDivIcon("#ffd6a5"), // Peach
+  low: createDivIcon("#fdffb6"), // Soft yellow
+  "very-low": createDivIcon("#caffbf"), // Mint green
 };
 
 // Map auto-centering component
@@ -38,22 +39,50 @@ function ChangeMapView({ coords }) {
   return null;
 }
 
-const ProfileCard = ({ user, isCurrentUser = false, navigate }) => {
-  const handleViewProfile = () => {
-    if (isCurrentUser) {
-      navigate("/profile");
-    } else if (user.userId) {
-      navigate(`/profile/${user.userId}`);
+// 🧍 Profile Card Component
+const ProfileCard = ({ user, isCurrentUser = false }) => {
+  const navigate = useNavigate();
+
+  // ✅ Navigate to a new profile page with user info
+ const handleViewProfile = () => {
+  const targetId = user.userId || user.id;
+  if (!targetId) {
+    console.error("User ID missing for profile view");
+    return;
+  }
+
+  // Always navigate to other user's detailed profile page
+  navigate(`/profile/${targetId}`, { state: { user } });
+};
+
+  // ✅ Send connection request
+  const handleConnect = async () => {
+    try {
+      const targetId = user.userId || user.id;
+      if (!targetId) {
+        alert("User ID is missing. Cannot send connection request.");
+        return;
+      }
+
+      const response = await axios.post(
+        `http://localhost:8500/connect/${targetId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      alert(`Connection request sent to ${user.displayName || user.userName}`);
+      console.log("Connection response:", response.data);
+    } catch (error) {
+      console.error("Failed to send connection request:", error);
+      alert("Failed to send connection request. Check console.");
     }
   };
 
-  const handleSendMessage = () => {
-    if (user.userId) {
-      navigate(`/messages?userId=${user.userId}`);
-    }
-  };
-
-  // Always show a match percentage, default to 0%
+  // ✅ Calculate similarity percentage
   const similarityPercentage =
     typeof user.similarityScore === "number"
       ? `${Math.round(user.similarityScore * 100)}%`
@@ -77,45 +106,25 @@ const ProfileCard = ({ user, isCurrentUser = false, navigate }) => {
 
       <div className="profile-details">
         {!isCurrentUser && user.displayName && (
-          <p><strong>Name:</strong> {user.displayName}</p>
+          <p>
+            <strong>Name:</strong> {user.displayName}
+          </p>
         )}
 
         {isCurrentUser ? (
-          <p><strong>Status:</strong> This is your current location</p>
+          <p>
+            <strong>Status:</strong> This is your current location
+          </p>
         ) : (
           <>
-            <p><strong>Distance:</strong> {user.distanceInKm?.toFixed(2) || "N/A"} km away</p>
-            <p><strong>Match:</strong> {similarityPercentage} similarity</p>
+            <p>
+              <strong>Distance:</strong>{" "}
+              {user.distanceInKm?.toFixed(2) || "N/A"} km away
+            </p>
+            <p>
+              <strong>Match:</strong> {similarityPercentage} similarity
+            </p>
           </>
-        )}
-
-        {user.bio && (
-          <div className="profile-bio">
-            <strong>Bio:</strong>
-            <p>{user.bio}</p>
-          </div>
-        )}
-
-        {user.interests && user.interests.length > 0 && (
-          <div className="profile-interests">
-            <strong>Interests:</strong>
-            <ul>
-              {user.interests.map((interest, i) => (
-                <li key={i}>{interest}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {user.activities && user.activities.length > 0 && (
-          <div className="profile-activities">
-            <strong>Activities:</strong>
-            <ul>
-              {user.activities.map((activity, i) => (
-                <li key={i}>{activity}</li>
-              ))}
-            </ul>
-          </div>
         )}
 
         {!isCurrentUser && (
@@ -126,12 +135,6 @@ const ProfileCard = ({ user, isCurrentUser = false, navigate }) => {
             >
               View Full Profile
             </button>
-            <button
-              className="profile-button send-message"
-              onClick={handleSendMessage}
-            >
-              Message
-            </button>
           </div>
         )}
       </div>
@@ -139,6 +142,7 @@ const ProfileCard = ({ user, isCurrentUser = false, navigate }) => {
   );
 };
 
+// 🗺 Main Map Component
 export default function Map() {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [nearbyUsers, setNearbyUsers] = useState([]);
@@ -146,7 +150,7 @@ export default function Map() {
   const [error, setError] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
 
-  // Function to update only the current user's location in the backend
+  // Update current user's location
   const updateUserLocation = async (latitude, longitude) => {
     try {
       await axios.post(
@@ -164,7 +168,7 @@ export default function Map() {
     }
   };
 
-  // Function to fetch current user profile
+  // Fetch current user profile
   const fetchCurrentUserProfile = async () => {
     try {
       const response = await axios.get("http://localhost:8500/interests/", {
@@ -172,7 +176,7 @@ export default function Map() {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      
+
       setCurrentUser({
         userName: response.data.UserName || "You",
         displayName: response.data.name || "Your Profile",
@@ -181,19 +185,16 @@ export default function Map() {
         interests: response.data.interests?.interests || [],
         activities: response.data.interests?.activities || [],
       });
-      
-      console.log("Current user profile:", response.data);
     } catch (error) {
       console.error("Failed to fetch current user profile:", error);
-      // Set default user info if profile fetch fails
       setCurrentUser({
         userName: "You",
-        displayName: "Your Profile"
+        displayName: "Your Profile",
       });
     }
   };
 
-  // Function to fetch nearby users with detailed profile info and similarity scores
+  // Fetch nearby users
   const fetchNearbyUsers = async () => {
     try {
       const response = await axios.get("http://localhost:8500/location/nearby", {
@@ -201,9 +202,6 @@ export default function Map() {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
 
-      console.log("API Response:", response.data);
-
-      // Extract user data with detailed profile information
       const validUsers =
         response.data?.users
           ?.filter((user) => user?.latitude && user?.longitude && user?.user?.UserName)
@@ -215,25 +213,24 @@ export default function Map() {
             },
             userName: user.user.UserName,
             displayName: user.user.name,
-            distanceInKm: user.distanceInKm || 
-                         (user.distance ? user.distance / 1000 : null), // Convert m to km if needed
+            distanceInKm:
+              user.distanceInKm ||
+              (user.distance ? user.distance / 1000 : null),
             profilePic: user.user.profilePic || null,
             bio: user.interests?.bio || null,
             interests: user.interests?.interests || [],
             activities: user.interests?.activities || [],
-            isProfileComplete: user.interests?.isProfileComplete || false,
             similarityScore: user.similarityScore || null,
-            similarityCategory: user.similarityCategory || "very-low"
+            similarityCategory: user.similarityCategory || "very-low",
           })) || [];
 
       setNearbyUsers(validUsers);
-      console.log("Processed Nearby Users:", validUsers);
     } catch (error) {
-      console.error("Error fetching nearby users:", error.response?.data || error.message);
+      console.error("Error fetching nearby users:", error);
     }
   };
 
-  // Fetch similarity-based matched users
+  // Fetch similarity matches
   const fetchSimilarityMatchedUsers = async () => {
     try {
       const response = await axios.get("http://localhost:8500/interests/matches", {
@@ -241,39 +238,25 @@ export default function Map() {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
 
-      console.log("Similarity Matches Response:", response.data);
-
-      // Create a map of userId to similarity information
       const similarityMap = {};
-      response.data.users.forEach(user => {
+      response.data.users.forEach((user) => {
         similarityMap[user.userId] = {
           similarityScore: user.similarityScore,
           similarityCategory: user.similarityCategory,
-          interestMatchCount: user.interestMatchCount,
-          activityMatchCount: user.activityMatchCount
         };
       });
 
-      // Update nearby users with similarity information
-      setNearbyUsers(prevUsers => 
-        prevUsers.map(user => {
-          const similarityInfo = similarityMap[user.userId];
-          if (similarityInfo) {
-            return {
-              ...user,
-              ...similarityInfo
-            };
-          }
-          return user;
+      setNearbyUsers((prevUsers) =>
+        prevUsers.map((user) => {
+          const match = similarityMap[user.userId];
+          return match ? { ...user, ...match } : user;
         })
       );
-      
     } catch (error) {
-      console.error("Error fetching similarity matches:", error.response?.data || error.message);
+      console.error("Error fetching similarity matches:", error);
     }
   };
 
-  // Fetch user's location and profile data
   useEffect(() => {
     const getUserLocation = () => {
       navigator.geolocation.getCurrentPosition(
@@ -282,18 +265,9 @@ export default function Map() {
           setCurrentLocation([latitude, longitude]);
           setLoading(false);
 
-          console.log("Current coordinates:", latitude, longitude);
-
-          // Fetch current user profile
           await fetchCurrentUserProfile();
-          
-          // Update backend with current location
           await updateUserLocation(latitude, longitude);
-
-          // Fetch nearby users
           await fetchNearbyUsers();
-          
-          // Fetch similarity-based matched users to update the markers
           await fetchSimilarityMatchedUsers();
         },
         (error) => {
@@ -308,11 +282,8 @@ export default function Map() {
     getUserLocation();
   }, []);
 
-  // Get the appropriate marker icon based on similarity category
-  const getMarkerIcon = (user) => {
-    if (!user.similarityCategory) return similarityMarkers["very-low"];
-    return similarityMarkers[user.similarityCategory] || similarityMarkers["very-low"];
-  };
+  const getMarkerIcon = (user) =>
+    similarityMarkers[user.similarityCategory] || similarityMarkers["very-low"];
 
   return (
     <div className="map-wrapper">
@@ -324,39 +295,27 @@ export default function Map() {
           <p className="error-text">{error}</p>
         ) : (
           <>
+            {/* Map Legend */}
             <div className="map-legend">
               <h4>Similarity Legend</h4>
-              <div className="legend-item">
-                <div className="legend-color very-high"></div>
-                <span>Very High Match (80-100%)</span>
-              </div>
-              <div className="legend-item">
-                <div className="legend-color high"></div>
-                <span>High Match (60-79%)</span>
-              </div>
-              <div className="legend-item">
-                <div className="legend-color medium"></div>
-                <span>Medium Match (40-59%)</span>
-              </div>
-              <div className="legend-item">
-                <div className="legend-color low"></div>
-                <span>Low Match (20-39%)</span>
-              </div>
-              <div className="legend-item">
-                <div className="legend-color very-low"></div>
-                <span>Very Low Match (0-19%)</span>
-              </div>
+              {["very-high", "high", "medium", "low", "very-low"].map((level) => (
+                <div className="legend-item" key={level}>
+                  <div className={`legend-color ${level}`}></div>
+                  <span>{level.replace("-", " ").toUpperCase()} Match</span>
+                </div>
+              ))}
               <div className="legend-item">
                 <div className="legend-color you"></div>
                 <span>You</span>
               </div>
             </div>
-            
+
+            {/* Map with markers */}
             <MapContainer center={currentLocation} zoom={12} className="map-box">
               <ChangeMapView coords={currentLocation} />
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-              {/* User's Current Location Marker */}
+              {/* Current User */}
               {currentLocation && currentUser && (
                 <Marker position={currentLocation} icon={userIcon}>
                   <Popup className="profile-popup-container">
@@ -365,7 +324,7 @@ export default function Map() {
                 </Marker>
               )}
 
-              {/* Nearby Users Markers - Color-coded by similarity */}
+              {/* Nearby Users */}
               {nearbyUsers.map((user, index) => (
                 <Marker
                   key={user.userId || index}

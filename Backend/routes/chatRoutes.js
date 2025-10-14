@@ -1,4 +1,3 @@
-// routes/chatRoutes.js
 const express = require("express");
 const router = express.Router();
 const auth = require("../middleware/auth");
@@ -70,6 +69,38 @@ router.get("/history/:peerId", async (req, res) => {
   } catch (err) {
     console.error("History fetch error:", err);
     res.status(500).json({ error: "Failed to fetch chat history" });
+  }
+});
+
+/**
+ * 🔥 NEW: Delete chat history between current user and peer
+ * Used when a connection is removed (unfriend)
+ */
+router.delete("/history/:peerId", async (req, res) => {
+  try {
+    const userId = req.userId || req.user?._id || req.user?.id;
+    const peerId = req.params.peerId;
+
+    if (!userId) return res.status(401).json({ error: "User not authenticated" });
+    if (!peerId) return res.status(400).json({ error: "peerId is required" });
+
+    const result = await Message.deleteMany({
+      $or: [
+        { from: userId, to: peerId },
+        { from: peerId, to: userId },
+      ],
+    });
+
+    console.log(`Deleted ${result.deletedCount} messages between ${userId} and ${peerId}`);
+
+    res.json({
+      ok: true,
+      deletedCount: result.deletedCount,
+      message: "Chat history deleted successfully",
+    });
+  } catch (err) {
+    console.error("Delete chat history error:", err);
+    res.status(500).json({ error: "Failed to delete chat history" });
   }
 });
 

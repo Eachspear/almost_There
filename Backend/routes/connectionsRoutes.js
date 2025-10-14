@@ -22,4 +22,7 @@ router.post('/respond', connectionController.respondToRequest);
 // Get all accepted connections
 router.get('/', connectionController.getUserConnections);
 
+router.delete('/:id', connectionController.removeConnection);
+
+
 module.exports = router;

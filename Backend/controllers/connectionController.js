@@ -2,6 +2,7 @@
 const Connection = require('../models/Connections');
 const User = require('../models/user');
 const mongoose = require('mongoose');
+const Message=require('../models/Message')
 
 // Send a connection request
 exports.sendConnectionRequest = async (req, res) => {
@@ -257,5 +258,46 @@ exports.getUserConnections = async (req, res) => {
   } catch (error) {
     console.error('Error getting user connections:', error);
     res.status(500).json({ message: 'Failed to get user connections' });
+  }
+};
+exports.removeConnection = async (req, res) => {
+  try {
+    const userId = req.userId || req.user._id;
+    const connectionId = req.params.id;
+
+    const connection = await Connection.findById(connectionId);
+    if (!connection) {
+      return res.status(404).json({ message: 'Connection not found' });
+    }
+
+    // Check authorization
+    if (
+      connection.requesterId.toString() !== userId.toString() &&
+      connection.receiverId.toString() !== userId.toString()
+    ) {
+      return res.status(403).json({ message: 'Not authorized to remove this connection' });
+    }
+
+    // Identify the friend (the other user)
+    const friendId =
+      connection.requesterId.toString() === userId.toString()
+        ? connection.receiverId
+        : connection.requesterId;
+
+    // Delete the connection
+    await connection.deleteOne();
+
+    // Delete chat history between both users
+    await Message.deleteMany({
+      $or: [
+        { from: userId, to: friendId },
+        { from: friendId, to: userId },
+      ],
+    });
+
+    res.status(200).json({ message: 'Connection removed and chat history deleted' });
+  } catch (error) {
+    console.error('Error removing connection:', error);
+    res.status(500).json({ message: 'Failed to remove connection' });
   }
 };

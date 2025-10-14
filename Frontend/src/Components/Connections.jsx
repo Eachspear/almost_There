@@ -4,7 +4,7 @@ import axios from "axios";
 import { Store } from "react-notifications-component";
 import Navbar from "./Navbar";
 import ChatWindow from "./ChatWindow";
-import { User, UserCheck, UsersRound, Shield } from "lucide-react";
+import { UserCheck, UsersRound, Shield, Trash2 } from "lucide-react";
 
 const showNotification = (title, message, type = "success", duration = 3000) => {
   Store.addNotification({
@@ -38,11 +38,10 @@ function Connections() {
       }
 
       setLoading(true);
-      const response = await axios.get(
-        `http://localhost:8500/connections`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      
+      const response = await axios.get("http://localhost:8500/connections", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
       setConnections(response.data.connections || []);
       console.log("Fetched connections:", response.data);
     } catch (error) {
@@ -53,12 +52,41 @@ function Connections() {
     }
   };
 
+  // ✅ Remove connection and chat history
+  const handleRemoveFriend = async (connectionId, friendId, friendName) => {
+    if (!window.confirm(`Remove ${friendName} from your connections? This will delete your chat history too.`)) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+
+      // Step 1: Remove connection
+      await axios.delete(`http://localhost:8500/connections/${connectionId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Step 2: Delete chat history
+      await axios.delete(`http://localhost:8500/chat/history/${friendId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Step 3: Update UI
+      setConnections((prev) => prev.filter((c) => c.connectionId !== connectionId));
+
+      showNotification("Removed", `${friendName} has been removed and chat history deleted.`);
+    } catch (error) {
+      console.error("Error removing connection:", error);
+      showNotification("Error", "Failed to remove connection", "danger");
+    }
+  };
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString(undefined, {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
@@ -103,7 +131,7 @@ function Connections() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <img
-                      src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${connection.user?.UserName || 'user'}`}
+                      src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${connection.user?.UserName || "user"}`}
                       alt="User avatar"
                       className="w-16 h-16 rounded-full border border-pink-300"
                     />
@@ -120,34 +148,49 @@ function Connections() {
                       </div>
                     </div>
                   </div>
-                  
-                  <button
-                    onClick={() =>
-                      setChatPeer({
-                        id: connection.user?.id,
-                        name: connection.user?.name || "User",
-                      })
-                    }
-                    className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
-                  >
-                    Message
-                  </button>
+
+                  <div className="flex flex-col gap-2">
+                    <button
+                      onClick={() =>
+                        setChatPeer({
+                          id: connection.user?.id,
+                          name: connection.user?.name || "User",
+                        })
+                      }
+                      className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+                    >
+                      Message
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        handleRemoveFriend(
+                          connection.connectionId,
+                          connection.user?.id,
+                          connection.user?.name
+                        )
+                      }
+                      className="flex items-center justify-center gap-1 bg-red-100 hover:bg-red-200 text-red-600 px-4 py-2 rounded-lg text-sm font-medium transition"
+                    >
+                      <Trash2 size={14} /> Remove
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
+
       {chatPeer && (
-    <ChatWindow
-      peerId={chatPeer.id}
-      peerName={chatPeer.name}
-      onClose={() => setChatPeer(null)}
-    />
-  )}
+        <ChatWindow
+          peerId={chatPeer.id}
+          peerName={chatPeer.name}
+          onClose={() => setChatPeer(null)}
+        />
+      )}
     </div>
   );
 }
-
 
 export default Connections;

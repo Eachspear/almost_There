@@ -20,6 +20,8 @@ const showNotification = (title, message, type = "success", duration = 3000) => 
 
 function MatchingUsers() {
   const [users, setUsers] = useState([]);
+  const [connectedUserIds, setConnectedUserIds] = useState([]);
+  const [pendingUserIds, setPendingUserIds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [limitValue, setLimitValue] = useState(20);
   const navigate = useNavigate();
@@ -28,6 +30,47 @@ function MatchingUsers() {
     fetchMatchingUsers();
   }, [limitValue]);
 
+  useEffect(() => {
+    fetchConnectedAndPendingUsers();
+  }, []);
+
+  // ✅ Fetch all connected and pending connection users
+  const fetchConnectedAndPendingUsers = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      // Fetch accepted connections
+      const [connectionsRes, sentRequestsRes] = await Promise.all([
+        axios.get("http://localhost:8500/connections", {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get("http://localhost:8500/connections/requests/sent", {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
+
+      // ✅ Extract connected user IDs
+      const connectedIds =
+        connectionsRes.data.connections?.map((conn) => conn.user?.id) || [];
+
+      // ✅ Extract pending (sent) user IDs
+      const pendingIds =
+        sentRequestsRes.data.requests?.map(
+          (req) => req.receiverId?._id || req.receiverId
+        ) || [];
+
+      setConnectedUserIds(connectedIds);
+      setPendingUserIds(pendingIds);
+
+      console.log("Connected user IDs:", connectedIds);
+      console.log("Pending user IDs:", pendingIds);
+    } catch (error) {
+      console.error("Error fetching connected/pending users:", error);
+    }
+  };
+
+  // ✅ Fetch matching users
   const fetchMatchingUsers = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -43,7 +86,7 @@ function MatchingUsers() {
       });
 
       setUsers(response.data.users || []);
-      console.log("Fetched users:", response.data.users); // Debug log
+      console.log("Fetched matching users:", response.data.users);
     } catch (error) {
       console.error("Error fetching matching users:", error);
       showNotification("Error", "Failed to load matching users", "danger");
@@ -52,6 +95,7 @@ function MatchingUsers() {
     }
   };
 
+  // ✅ Handle connect request
   const handleConnect = async (userId) => {
     try {
       const token = localStorage.getItem("token");
@@ -59,42 +103,41 @@ function MatchingUsers() {
         navigate("/login");
         return;
       }
-      
-      // Make sure we have a valid userId
+
       if (!userId) {
         showNotification("Error", "Invalid user ID", "danger");
         return;
       }
-      
-      console.log("Sending connection request to user ID:", userId); // Debug log
-      
-      // Send connection request to backend
-      const response = await axios.post(
+
+      console.log("Sending connection request to user ID:", userId);
+
+      await axios.post(
         `http://localhost:8500/connections/request`,
         { receiverId: userId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
-      console.log("Connection response:", response.data); // Debug log
-      showNotification("Connection Requested", "Connection request sent successfully!");
+
+      showNotification("Connection Requested", "Request sent successfully!");
+      setPendingUserIds((prev) => [...prev, userId]);
     } catch (error) {
       console.error("Error sending connection request:", error);
-      if (error.response) {
-        console.error("Error response data:", error.response.data); // More detailed error info
-      }
       showNotification(
-        "Request Failed", 
-        error.response?.data?.message || "Failed to send connection request", 
+        "Request Failed",
+        error.response?.data?.message || "Failed to send connection request",
         "danger"
       );
     }
   };
 
+  // ✅ Filter out connected and pending users
+  const filteredUsers = users.filter(
+    (u) => !connectedUserIds.includes(u.userId) && !pendingUserIds.includes(u.userId)
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-pink-100">
       <Navbar />
       <div className="container mx-auto max-w-4xl px-4 mt-28 pb-10">
-
         <h1 className="text-3xl font-bold text-center text-pink-600 mb-8">
           Find People Who Match Your Vibe 💫
         </h1>
@@ -103,18 +146,16 @@ function MatchingUsers() {
           <div className="flex justify-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
           </div>
-        ) : users.length === 0 ? (
+        ) : filteredUsers.length === 0 ? (
           <div className="text-center py-12 text-gray-600">
             <User size={48} className="mx-auto mb-4 text-gray-400" />
-            <h3 className="text-xl font-medium">No matches yet</h3>
-            <p className="text-sm">Add more interests to increase your chances 💕</p>
+            <h3 className="text-xl font-medium">No new matches</h3>
+            <p className="text-sm">You've already connected or sent requests 💕</p>
           </div>
         ) : (
           <div className="space-y-6">
-            {users.map((user, index) => {
-              // Get the correct user ID based on the data structure
+            {filteredUsers.map((user, index) => {
               const userId = user.userId;
-              
               return (
                 <div
                   key={index}
@@ -123,7 +164,9 @@ function MatchingUsers() {
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-4">
                       <img
-                        src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${user.user?.UserName || 'user'}`}
+                        src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${
+                          user.user?.UserName || "user"
+                        }`}
                         alt="User avatar"
                         className="w-16 h-16 rounded-full border border-pink-300 shadow-sm"
                       />
@@ -137,7 +180,9 @@ function MatchingUsers() {
 
                         <div className="flex items-center text-sm text-pink-600 mb-3">
                           <Heart size={16} className="mr-1" />
-                          <span>{user.matchCount || user.similarityScore || "N/A"} shared interests</span>
+                          <span>
+                            {user.matchCount || user.similarityScore || "N/A"} shared interests
+                          </span>
                         </div>
 
                         {user.interests?.length > 0 && (
@@ -152,9 +197,6 @@ function MatchingUsers() {
                                   {interest}
                                 </span>
                               ))}
-                              {user.interests.length > 5 && (
-                                <span className="text-xs text-gray-500">+{user.interests.length - 5} more</span>
-                              )}
                             </div>
                           </div>
                         )}
@@ -171,9 +213,6 @@ function MatchingUsers() {
                                   {activity}
                                 </span>
                               ))}
-                              {user.activities.length > 3 && (
-                                <span className="text-xs text-gray-500">+{user.activities.length - 3} more</span>
-                              )}
                             </div>
                           </div>
                         )}
@@ -181,12 +220,7 @@ function MatchingUsers() {
                     </div>
 
                     <button
-                      onClick={() => {
-                        // Debug check to verify ID format
-                        console.log("User data:", user);
-                        console.log("User ID being passed:", userId);
-                        handleConnect(userId);
-                      }}
+                      onClick={() => handleConnect(userId)}
                       className="bg-pink-500 hover:bg-pink-600 text-white px-5 py-2 rounded-full font-semibold shadow-md transition flex items-center gap-1"
                     >
                       Connect <ArrowRight size={16} />
@@ -204,7 +238,7 @@ function MatchingUsers() {
           </div>
         )}
 
-        {!loading && users.length > 0 && (
+        {!loading && filteredUsers.length > 0 && (
           <div className="mt-10 flex justify-center space-x-4">
             <button
               onClick={() => setLimitValue(Math.max(10, limitValue - 10))}

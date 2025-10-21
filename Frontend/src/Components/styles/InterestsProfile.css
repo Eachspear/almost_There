@@ -1,0 +1,157 @@
+/* 🌤️ Global Layout */
+body {
+  background: linear-gradient(135deg, #fff8f1 0%, #fff 100%);
+  font-family: 'Inter', 'Poppins', sans-serif;
+  color: #1f2937;
+}
+
+/* 🔹 Profile Page Container */
+.profile-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+  box-shadow: 0 10px 40px rgba(249, 115, 22, 0.15);
+  border: 1px solid rgba(249, 115, 22, 0.15);
+  transition: all 0.3s ease;
+}
+
+.profile-card:hover {
+  box-shadow: 0 12px 45px rgba(249, 115, 22, 0.25);
+  transform: translateY(-2px);
+}
+
+/* 🔸 Section Headings */
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #ea580c;
+  margin-bottom: 0.5rem;
+}
+
+/* 🧠 Bio Section */
+textarea {
+  border-radius: 12px;
+  background: #fffaf3;
+  border: 1px solid #fcd34d;
+  transition: all 0.3s ease;
+}
+
+textarea:focus {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+  background: #fffdf6;
+}
+
+/* 🏷️ Interest & Activity Chips */
+.interest-chip {
+  background: linear-gradient(to right, #fef3c7, #fde68a);
+  color: #92400e;
+  font-weight: 500;
+  border-radius: 9999px;
+  padding: 6px 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 5px rgba(249, 115, 22, 0.15);
+  transition: all 0.25s ease-in-out;
+}
+
+.interest-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(249, 115, 22, 0.25);
+}
+
+/* ❌ Remove Icon */
+.remove-icon {
+  cursor: pointer;
+  color: #ea580c;
+  opacity: 0.7;
+  transition: all 0.2s;
+}
+
+.remove-icon:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* ➕ Add Buttons */
+.add-button {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+  transition: all 0.25s ease;
+}
+
+.add-button:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(90deg, #f97316, #facc15);
+  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.35);
+}
+
+/* 💾 Save Button */
+.save-button {
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+  color: #fff;
+  border-radius: 9999px;
+  font-weight: 600;
+  padding: 10px 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
+}
+
+.save-button:hover {
+  background: linear-gradient(135deg, #ea580c, #fbbf24);
+  box-shadow: 0 6px 18px rgba(249, 115, 22, 0.4);
+  transform: translateY(-2px);
+}
+
+/* 💬 Input Fields */
+input[type="text"] {
+  border-radius: 10px 0 0 10px;
+  border: 1px solid #fcd34d;
+  background: #fffaf1;
+  padding: 10px;
+  color: #374151;
+  transition: all 0.3s ease;
+}
+
+input[type="text"]:focus {
+  border-color: #f59e0b;
+  background: #fffdf7;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+}
+
+/* 🧩 Suggestion Buttons */
+.suggestion-button {
+  background: #fff8ec;
+  border: 1px solid #fde68a;
+  color: #92400e;
+  border-radius: 9999px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.25s ease-in-out;
+}
+
+.suggestion-button:hover {
+  background: linear-gradient(to right, #fcd34d, #fbbf24);
+  color: #78350f;
+  transform: scale(1.05);
+  box-shadow: 0 3px 6px rgba(249, 115, 22, 0.25);
+}
+
+/* ✨ Card Transitions */
+.profile-card section {
+  transition: all 0.3s ease;
+}
+
+.profile-card section:hover {
+  background: rgba(255, 249, 236, 0.6);
+  border-radius: 12px;
+  padding: 0.5rem;
+}

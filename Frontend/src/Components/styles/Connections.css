@@ -1,0 +1,97 @@
+/* 🌈 Background */
+.connections-bg {
+  background: linear-gradient(135deg, #e0f2fe 0%, #f9fafb 30%, #f5f3ff 100%);
+  font-family: "Inter", sans-serif;
+}
+
+/* 💠 Header Button */
+.requests-btn {
+  background: rgba(255, 255, 255, 0.75);
+  color: #0369a1;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
+}
+.requests-btn:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(14, 165, 233, 0.25);
+}
+
+/* 🧊 Connection Card */
+.connection-card {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 6px 20px rgba(14, 165, 233, 0.08);
+  backdrop-filter: blur(14px);
+  transition: all 0.3s ease;
+}
+.connection-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(56, 189, 248, 0.2);
+  border-color: rgba(56, 189, 248, 0.25);
+}
+
+/* 🧑 Avatar */
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(56, 189, 248, 0.3);
+  box-shadow: 0 4px 10px rgba(56, 189, 248, 0.15);
+}
+
+/* 💬 Message Button */
+.message-btn {
+  background: linear-gradient(to right, #0ea5e9, #38bdf8);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.3);
+  transition: all 0.25s ease;
+}
+.message-btn:hover {
+  background: linear-gradient(to right, #0284c7, #22d3ee);
+  transform: scale(1.03);
+  box-shadow: 0 6px 18px rgba(14, 165, 233, 0.35);
+}
+
+/* ❌ Remove Button */
+.remove-btn {
+  background: rgba(241, 245, 249, 0.8);
+  color: #334155;
+  border: 1px solid rgba(203, 213, 225, 0.7);
+  transition: all 0.2s ease;
+}
+.remove-btn:hover {
+  background: rgba(248, 250, 252, 1);
+  transform: scale(1.02);
+  box-shadow: 0 3px 8px rgba(148, 163, 184, 0.2);
+}
+
+/* 🧍 Empty State */
+.empty-state {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  box-shadow: 0 6px 20px rgba(14, 165, 233, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+.empty-state:hover {
+  box-shadow: 0 8px 25px rgba(14, 165, 233, 0.2);
+}
+
+/* ✨ Discover Button */
+.discover-btn {
+  background: linear-gradient(to right, #0ea5e9, #38bdf8);
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.25);
+  transition: all 0.3s ease;
+}
+.discover-btn:hover {
+  background: linear-gradient(to right, #0284c7, #22d3ee);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(14, 165, 233, 0.35);
+}

@@ -4,7 +4,8 @@ import axios from "axios";
 import { Store } from "react-notifications-component";
 import Navbar from "./Navbar";
 import ChatWindow from "./ChatWindow";
-import { UserCheck, UsersRound, Shield, Trash2 } from "lucide-react";
+import { UserCheck, UsersRound, Shield, Trash2, MessageSquare } from "lucide-react";
+import "./styles/Connections.css"; // 👈 new CSS file
 
 const showNotification = (title, message, type = "success", duration = 3000) => {
   Store.addNotification({
@@ -43,7 +44,6 @@ function Connections() {
       });
 
       setConnections(response.data.connections || []);
-      console.log("Fetched connections:", response.data);
     } catch (error) {
       console.error("Error fetching connections:", error);
       showNotification("Error", "Failed to load connections", "danger");
@@ -52,29 +52,23 @@ function Connections() {
     }
   };
 
-  // ✅ Remove connection and chat history
   const handleRemoveFriend = async (connectionId, friendId, friendName) => {
-    if (!window.confirm(`Remove ${friendName} from your connections? This will delete your chat history too.`)) {
+    if (!window.confirm(`Remove ${friendName}? This will also delete your chat history.`)) {
       return;
     }
 
     try {
       const token = localStorage.getItem("token");
-
-      // Step 1: Remove connection
       await axios.delete(`http://localhost:8500/connections/${connectionId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      // Step 2: Delete chat history
       await axios.delete(`http://localhost:8500/chat/history/${friendId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      // Step 3: Update UI
       setConnections((prev) => prev.filter((c) => c.connectionId !== connectionId));
 
-      showNotification("Removed", `${friendName} has been removed and chat history deleted.`);
+      showNotification("Removed", `${friendName} removed and chat history deleted.`);
     } catch (error) {
       console.error("Error removing connection:", error);
       showNotification("Error", "Failed to remove connection", "danger");
@@ -91,64 +85,67 @@ function Connections() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-pink-100">
+    <div className="connections-bg min-h-screen flex flex-col">
       <Navbar />
-      <div className="container mx-auto max-w-4xl px-4 py-10 pt-24">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-pink-600">My Connections</h1>
+      <div className="container mx-auto max-w-6xl px-6 py-10 mt-20">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-10">
+          <h1 className="text-4xl font-extrabold text-slate-800 tracking-tight">
+            My Connections
+          </h1>
           <button
             onClick={() => navigate("/requests")}
-            className="flex items-center gap-1 bg-white hover:bg-gray-50 text-pink-600 px-4 py-2 rounded-full shadow-sm transition"
+            className="requests-btn flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all"
           >
             <Shield size={16} />
             View Requests
           </button>
         </div>
 
+        {/* Loading */}
         {loading ? (
-          <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+          <div className="flex justify-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-sky-500"></div>
           </div>
         ) : connections.length === 0 ? (
-          <div className="text-center py-12 text-gray-600 bg-white rounded-xl shadow-sm border border-pink-100">
-            <UsersRound size={48} className="mx-auto mb-4 text-gray-400" />
-            <h3 className="text-xl font-medium">No connections yet</h3>
-            <p className="text-sm">Start connecting with people who match your interests</p>
+          <div className="empty-state text-center py-16">
+            <UsersRound size={50} className="mx-auto mb-4 text-gray-400" />
+            <h3 className="text-2xl font-semibold text-gray-700 mb-2">No connections yet</h3>
+            <p className="text-gray-500 mb-4">
+              Start connecting with people who share your interests.
+            </p>
             <button
               onClick={() => navigate("/matches")}
-              className="mt-4 bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-full text-sm font-medium transition"
+              className="discover-btn px-6 py-2 rounded-xl text-white font-medium transition-all"
             >
-              Find Matches
+              Discover People
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {connections.map((connection) => (
-              <div
-                key={connection.connectionId}
-                className="bg-white rounded-xl p-5 shadow-sm border border-pink-100 hover:shadow-md transition-all"
-              >
+              <div key={connection.connectionId} className="connection-card transition-all">
                 <div className="flex items-center justify-between">
+                  {/* User Info */}
                   <div className="flex items-center gap-4">
                     <img
                       src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${connection.user?.UserName || "user"}`}
                       alt="User avatar"
-                      className="w-16 h-16 rounded-full border border-pink-300"
+                      className="avatar"
                     />
                     <div>
                       <h3 className="font-semibold text-lg text-gray-800">
                         {connection.user?.name || "User"}
                       </h3>
-                      <p className="text-sm text-gray-500">
-                        @{connection.user?.UserName || "username"}
-                      </p>
+                      <p className="text-sm text-gray-500">@{connection.user?.UserName || "username"}</p>
                       <div className="flex items-center mt-2 text-xs text-gray-500">
-                        <UserCheck size={14} className="mr-1 text-green-500" />
-                        <span>Connected since {formatDate(connection.since)}</span>
+                        <UserCheck size={14} className="mr-1 text-sky-600" />
+                        <span>Since {formatDate(connection.since)}</span>
                       </div>
                     </div>
                   </div>
 
+                  {/* Actions */}
                   <div className="flex flex-col gap-2">
                     <button
                       onClick={() =>
@@ -157,9 +154,9 @@ function Connections() {
                           name: connection.user?.name || "User",
                         })
                       }
-                      className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+                      className="message-btn flex items-center gap-1 justify-center px-4 py-2 rounded-lg text-sm font-medium"
                     >
-                      Message
+                      <MessageSquare size={15} /> Message
                     </button>
 
                     <button
@@ -170,7 +167,7 @@ function Connections() {
                           connection.user?.name
                         )
                       }
-                      className="flex items-center justify-center gap-1 bg-red-100 hover:bg-red-200 text-red-600 px-4 py-2 rounded-lg text-sm font-medium transition"
+                      className="remove-btn flex items-center gap-1 justify-center px-4 py-2 rounded-lg text-sm font-medium"
                     >
                       <Trash2 size={14} /> Remove
                     </button>
@@ -182,6 +179,7 @@ function Connections() {
         )}
       </div>
 
+      {/* Chat Window */}
       {chatPeer && (
         <ChatWindow
           peerId={chatPeer.id}

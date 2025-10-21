@@ -1,30 +1,32 @@
-/* MapStyle.css — Aesthetic Dating/Friendship Style */
+/* 🌿 MapStyle.css — Refined Nature-Inspired Theme */
 .map-wrapper {
   position: relative;
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  background: linear-gradient(to bottom right, #ffe4ec, #e0c3fc);
-  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #e0fdf4 0%, #e0f2fe 50%, #f0fdfa 100%);
+  font-family: "Inter", sans-serif;
   padding-top: 60px;
   box-sizing: border-box;
 }
 
+/* 🗺️ Main Map Container */
 .map-container {
   position: relative;
   width: 100%;
-  height: calc(100vh - 60px); /* Adjust based on your navbar height */
-  border-radius: 16px;
+  height: calc(100vh - 60px);
+  border-radius: 18px;
   overflow: hidden;
+  box-shadow: 0 8px 24px rgba(13, 148, 136, 0.15);
 }
 
 .map-box {
   width: 100%;
   height: 100%;
-  border-radius: 16px;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  border-radius: 18px;
 }
 
+/* ⏳ Loading and Error Messages */
 .loading-text,
 .error-text {
   position: absolute;
@@ -32,216 +34,196 @@
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 1.2rem;
-  color: #d63384;
   font-weight: 500;
+  text-align: center;
 }
-
+.loading-text {
+  color: #0d9488;
+}
 .error-text {
-  color: #e63946;
+  color: #dc2626;
 }
 
+/* 💬 Profile Popup (for markers) */
 .profile-popup-container {
   min-width: 270px;
   max-width: 320px;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .profile-popup {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 1rem;
   padding: 16px;
-  background: linear-gradient(to bottom, #fff0f5, #fce4ec);
-  border-radius: 12px;
-  box-shadow: 0 6px 15px rgba(255, 192, 203, 0.25);
+  box-shadow: 0 8px 20px rgba(13, 148, 136, 0.15);
+  border: 1px solid rgba(94, 234, 212, 0.25);
+  transition: all 0.3s ease;
+}
+.profile-popup:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(13, 148, 136, 0.25);
 }
 
 .profile-name {
-  margin-top: 0;
-  margin-bottom: 12px;
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: #d63384;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0d9488;
+  margin-bottom: 10px;
   text-align: center;
+  letter-spacing: -0.02em;
 }
 
 .profile-pic-container {
   text-align: center;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
-
 .profile-pic {
-  width: 90px;
-  height: 90px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #ffc0cb;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  border: 2px solid #14b8a6;
+  box-shadow: 0 0 12px rgba(13, 148, 136, 0.25);
 }
 
 .profile-details {
-  font-size: 0.95rem;
-  color: #333;
+  color: #334155;
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
-
 .profile-details p {
-  margin: 6px 0;
-}
-
-.profile-bio,
-.profile-interests,
-.profile-activities {
-  margin-top: 12px;
-}
-
-.profile-bio p {
-  font-style: italic;
-  margin-top: 6px;
-  color: #6c567b;
-}
-
-.profile-interests ul,
-.profile-activities ul {
-  margin: 6px 0;
-  padding-left: 18px;
-  color: #555;
-}
-
-.profile-interests li::before,
-.profile-activities li::before {
-  content: " ";
-  margin-right: 4px;
+  margin: 4px 0;
 }
 
 .profile-actions {
+  margin-top: 10px;
   display: flex;
-  justify-content: space-between;
-  margin-top: 16px;
+  justify-content: center;
 }
-
 .profile-button {
-  padding: 8px 14px;
+  background: linear-gradient(to right, #0d9488, #14b8a6);
+  color: white;
   border: none;
-  border-radius: 8px;
-  cursor: pointer;
+  border-radius: 0.75rem;
+  padding: 0.4rem 1rem;
   font-size: 0.85rem;
-  font-weight: 500;
-  transition: all 0.3s ease-in-out;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+}
+.profile-button:hover {
+  background: linear-gradient(to right, #0f766e, #0d9488);
+  transform: translateY(-2px);
 }
 
-.view-profile {
-  background-color: #ff4d6d;
-  color: white;
+/* 🎨 Marker Dots */
+.marker-dot {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 0 8px rgba(13, 148, 136, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+.marker-dot:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 12px rgba(13, 148, 136, 0.5);
 }
 
-.view-profile:hover {
-  background-color: #e0415d;
-}
-
-.send-message {
-  background-color: #6a4c93;
-  color: white;
-}
-
-.send-message:hover {
-  background-color: #573a78;
-}
-
-/* Legend styling */
+/* 🧭 Legend Styling (keep your original colors!) */
 .map-legend {
   position: absolute;
   bottom: 20px;
   right: 20px;
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(94, 234, 212, 0.25);
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 8px 24px rgba(13, 148, 136, 0.15);
   backdrop-filter: blur(12px);
-  padding: 16px;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   z-index: 1000;
-  max-width: 240px;
   font-size: 0.85rem;
+  width: 220px;
+  animation: fadeIn 0.4s ease;
 }
 
 .map-legend h4 {
-  margin: 0 0 10px 0;
-  font-size: 1rem;
   text-align: center;
-  color: #d63384;
-  border-bottom: 1px solid #eee;
+  color: #0d9488;
+  font-size: 1rem;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(13, 148, 136, 0.15);
   padding-bottom: 5px;
-  font-weight: 600;
+  margin-bottom: 8px;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
+  gap: 0.6rem;
   margin-bottom: 6px;
-  font-size: 0.85rem;
-  color: #444;
+  color: #334155;
 }
 
 .legend-color {
-  width: 14px;
-  height: 14px;
-  border-radius: 9999px;
-  margin-right: 10px;
-  border: 1px solid #fff;
-  box-shadow: 0 0 2px rgba(0,0,0,0.2);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(13, 148, 136, 0.2);
+  border: 1px solid white;
 }
 
-/* Softer, pastel marker colors */
+/* 🎨 Original Marker Colors (kept from your version) */
 .legend-color.very-high {
   background-color: #ff4d6d; /* Strawberry Pink */
 }
-
 .legend-color.high {
   background-color: #ff85a2; /* Blush Pink */
 }
-
 .legend-color.medium {
   background-color: #ffd6a5; /* Peach */
 }
-
 .legend-color.low {
   background-color: #fdffb6; /* Soft Yellow */
 }
-
 .legend-color.very-low {
   background-color: #caffbf; /* Mint Green */
 }
-
 .legend-color.you {
   background-color: #6a4c93; /* Deep Lavender */
   border: 2px solid white;
 }
-.marker-dot {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 3px solid white;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
-}
 
-/* --- Fix: Ensure Navbar and Dropdowns appear above Map --- */
-
-/* Keep map behind navbar */
+/* 🧭 Map and Layer Fixes */
 .map-container,
 .leaflet-container {
   position: relative;
   z-index: 1 !important;
 }
-
-/* Prevent Leaflet map layers from overlapping UI */
 .leaflet-pane,
 .leaflet-top,
 .leaflet-bottom {
   z-index: 1 !important;
 }
-
-/* Allow Leaflet controls (zoom buttons, etc.) to stay clickable */
 .leaflet-control {
   z-index: 10 !important;
 }
 
-/* Ensure Navbar dropdown menus (profile, notification) appear above map */
+/* Ensure Navbar dropdowns stay above map */
 .dropdown-menu {
   position: absolute;
   z-index: 9999 !important;
+}
+
+/* ✨ Smooth Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

@@ -1,0 +1,127 @@
+/* 🌊 Background Gradient */
+.profile-bg {
+  background: linear-gradient(135deg, #e0f7f1 0%, #e6f0ff 40%, #f7fbff 100%);
+  font-family: "Inter", sans-serif;
+}
+
+/* 💎 Profile Card */
+.profile-card {
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(94, 234, 212, 0.2);
+  box-shadow: 0 8px 30px rgba(94, 234, 212, 0.15);
+  backdrop-filter: blur(18px);
+  transition: all 0.3s ease;
+}
+.profile-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 34px rgba(45, 212, 191, 0.25);
+}
+
+/* 👤 Avatar */
+.profile-avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 4px solid #2dd4bf;
+  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.25);
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+.profile-avatar:hover {
+  transform: scale(1.05);
+}
+
+/* 🧾 Section Titles */
+.profile-section h3 {
+  font-size: 1.2rem;
+  color: #0f766e;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(13, 148, 136, 0.15);
+  padding-bottom: 4px;
+}
+
+/* 💬 Text & Lists */
+.profile-section p {
+  color: #374151;
+  font-size: 1rem;
+}
+.profile-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.profile-list li {
+  background: linear-gradient(to right, #99f6e4, #a7f3d0);
+  color: #064e3b;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.2);
+  transition: transform 0.25s ease;
+}
+.profile-list li:hover {
+  transform: scale(1.05);
+}
+
+/* 🎀 Buttons */
+.profile-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.back-btn {
+  background: rgba(240, 253, 250, 0.9);
+  color: #0d9488;
+  border: 1px solid rgba(94, 234, 212, 0.3);
+  border-radius: 10px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+.back-btn:hover {
+  background: rgba(204, 251, 241, 0.6);
+  transform: translateY(-2px);
+}
+.connect-btn {
+  background: linear-gradient(to right, #0d9488, #14b8a6);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.6rem 1.4rem;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
+  transition: all 0.3s ease;
+}
+.connect-btn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(to right, #0f766e, #0d9488);
+  box-shadow: 0 8px 20px rgba(13, 148, 136, 0.35);
+}
+.connect-btn.connected {
+  background: linear-gradient(to right, #a7f3d0, #6ee7b7);
+  color: #065f46;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  cursor: not-allowed;
+}
+
+/* ⏳ Loading + Error */
+.profile-loading-screen,
+.profile-error-screen {
+  min-height: 100vh;
+  text-align: center;
+  color: #444;
+  font-size: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.profile-error-screen p {
+  color: #0d9488;
+  margin-bottom: 1rem;
+}

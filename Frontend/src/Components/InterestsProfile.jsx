@@ -4,67 +4,56 @@ import axios from "axios";
 import { Store } from "react-notifications-component";
 import Navbar from "./Navbar";
 import { Plus, X, Save } from "lucide-react";
+import "./styles/InterestsProfile.css";
 
 function InterestsProfile() {
   const navigate = useNavigate();
-  const [profile, setProfile] = useState({
-    interests: [],
-    activities: [],
-    bio: "",
-  });
+  const [profile, setProfile] = useState({ interests: [], activities: [], bio: "" });
   const [newInterest, setNewInterest] = useState("");
   const [newActivity, setNewActivity] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  const [interestSuggestions] = useState([
-    "Music", "Movies", "Reading", "Travel", "Sports",
-    "Cooking", "Gaming", "Photography", "Art", "Hiking",
-    "Fitness", "Dance", "Technology", "Fashion", "Pets",
-  ]);
-  const [activitySuggestions] = useState([
-    "Coffee", "Lunch", "Dinner", "Walk", "Hiking",
-    "Movie Night", "Concert", "Study", "Gym", "Shopping",
-    "Beach Day", "Game Night", "Museum Visit", "Sports Event", "Happy Hour",
-  ]);
+  const interestSuggestions = [
+    "Technology", "Music", "Reading", "Travel", "Sports", "Coding", "Gaming",
+    "Photography", "Art", "Fitness", "Movies", "Cooking", "Volunteering", "Design", "Innovation"
+  ];
 
-  useEffect(() => {
-    fetchUserProfile();
-  }, []);
+  const activitySuggestions = [
+    "Coffee", "Lunch", "Hackathon", "Workshop", "Study Session", "Gym",
+    "Seminar", "Team Project", "Networking", "Open Mic", "Walk", "Conference"
+  ];
+
+  useEffect(() => { fetchUserProfile(); }, []);
 
   const fetchUserProfile = async () => {
     try {
       const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/login");
-        return;
-      }
+      if (!token) return navigate("/login");
 
-      const response = await axios.get("http://localhost:8500/interests/", {
+      const { data } = await axios.get("http://localhost:8500/interests/", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (response.data.profile) {
+      if (data.profile) {
         setProfile({
-          interests: response.data.profile.interests || [],
-          activities: response.data.profile.activities || [],
-          bio: response.data.profile.bio || "",
+          interests: data.profile.interests || [],
+          activities: data.profile.activities || [],
+          bio: data.profile.bio || "",
         });
       }
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-      setLoading(false);
+    } catch (err) {
+      console.error(err);
       Store.addNotification({
         title: "Error",
-        message: "Failed to load profile data",
+        message: "Failed to load your profile.",
         type: "danger",
         insert: "top",
         container: "top-right",
-        animationIn: ["animate__animated", "animate__fadeIn"],
-        animationOut: ["animate__animated", "animate__fadeOut"],
         dismiss: { duration: 3000 },
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -79,24 +68,20 @@ function InterestsProfile() {
 
       Store.addNotification({
         title: "Success",
-        message: "Your profile has been updated",
+        message: "Profile updated successfully!",
         type: "success",
         insert: "top",
         container: "top-right",
-        animationIn: ["animate__animated", "animate__fadeIn"],
-        animationOut: ["animate__animated", "animate__fadeOut"],
         dismiss: { duration: 2000 },
       });
-    } catch (error) {
-      console.error("Error saving profile:", error);
+    } catch (err) {
+      console.error(err);
       Store.addNotification({
         title: "Error",
-        message: "Failed to save profile",
+        message: "Failed to save your profile.",
         type: "danger",
         insert: "top",
         container: "top-right",
-        animationIn: ["animate__animated", "animate__fadeIn"],
-        animationOut: ["animate__animated", "animate__fadeOut"],
         dismiss: { duration: 3000 },
       });
     } finally {
@@ -104,73 +89,46 @@ function InterestsProfile() {
     }
   };
 
-  const addInterest = () => {
-    if (newInterest && !profile.interests.includes(newInterest)) {
-      setProfile({ ...profile, interests: [...profile.interests, newInterest] });
-      setNewInterest("");
-    }
+  const addItem = (type, value) => {
+    if (!value.trim()) return;
+    setProfile((prev) => ({
+      ...prev,
+      [type]: [...new Set([...prev[type], value])],
+    }));
+    type === "interests" ? setNewInterest("") : setNewActivity("");
   };
 
-  const removeInterest = (interest) => {
-    setProfile({
-      ...profile,
-      interests: profile.interests.filter((item) => item !== interest),
-    });
+  const removeItem = (type, value) => {
+    setProfile((prev) => ({
+      ...prev,
+      [type]: prev[type].filter((i) => i !== value),
+    }));
   };
 
-  const addActivity = () => {
-    if (newActivity && !profile.activities.includes(newActivity)) {
-      setProfile({ ...profile, activities: [...profile.activities, newActivity] });
-      setNewActivity("");
-    }
-  };
-
-  const removeActivity = (activity) => {
-    setProfile({
-      ...profile,
-      activities: profile.activities.filter((item) => item !== activity),
-    });
-  };
-
-  const handleBioChange = (e) => {
-    setProfile({ ...profile, bio: e.target.value });
-  };
-
-  const addSuggestion = (suggestion, type) => {
-    if (type === "interest") {
-      if (!profile.interests.includes(suggestion)) {
-        setProfile({ ...profile, interests: [...profile.interests, suggestion] });
-      }
-    } else {
-      if (!profile.activities.includes(suggestion)) {
-        setProfile({ ...profile, activities: [...profile.activities, suggestion] });
-      }
-    }
-  };
-
-  if (loading) {
+  if (loading)
     return (
-      <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white flex flex-col">
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50 flex flex-col">
         <Navbar />
         <div className="flex justify-center items-center flex-grow">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-pink-500 border-opacity-70"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-orange-500 border-opacity-70"></div>
         </div>
       </div>
     );
-  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white flex flex-col font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50 flex flex-col font-sans">
       <Navbar />
-      <div className="container mx-auto max-w-3xl px-6 py-8 mt-16">
-        <div className="bg-white rounded-3xl shadow-xl p-10 mb-10 border border-pink-100">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-extrabold text-pink-600">My Profile</h1>
+      <div className="container mx-auto max-w-3xl px-6 py-10 mt-16">
+        <div className="profile-card bg-white/80 backdrop-blur-lg rounded-3xl shadow-[0_8px_30px_rgba(249,115,22,0.1)] border border-orange-100 p-10 transition-all duration-500 hover:shadow-[0_8px_40px_rgba(249,115,22,0.2)]">
+          
+          {/* Header */}
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-3xl font-extrabold text-orange-600 tracking-tight">My Profile</h1>
             <button
               onClick={handleSaveProfile}
               disabled={saving}
-              className={`flex items-center gap-2 px-6 py-2 bg-pink-500 text-white font-semibold rounded-full hover:bg-pink-600 transition shadow-lg ${
-                saving ? "opacity-60 cursor-not-allowed" : ""
+              className={`save-button flex items-center gap-2 px-6 py-2 text-white font-semibold rounded-full transition-all duration-300 ${
+                saving ? "opacity-60 cursor-not-allowed" : "hover:scale-[1.03]"
               }`}
             >
               {saving ? (
@@ -181,64 +139,72 @@ function InterestsProfile() {
               ) : (
                 <>
                   <Save size={18} />
-                  Save Profile
+                  Save
                 </>
               )}
             </button>
           </div>
 
-          {/* Bio Section */}
-          <div className="mb-8">
-            <label className="block text-pink-600 font-medium mb-2">About Me</label>
+          {/* Bio */}
+          <div className="mb-10">
+            <label className="section-title block mb-2">About Me</label>
             <textarea
               value={profile.bio}
-              onChange={handleBioChange}
-              placeholder="Tell others about yourself..."
-              className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-300 focus:border-pink-500 bg-pink-50 placeholder:text-pink-400 text-pink-800"
+              onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+              placeholder="Share a little about yourself..."
               rows={4}
+              className="w-full p-4 border border-orange-100 rounded-xl focus:ring-2 focus:ring-orange-300 focus:border-orange-400 bg-orange-50/40 placeholder:text-gray-400 text-gray-800 transition-all duration-300"
             />
           </div>
 
           {/* Interests */}
-          <div className="mb-8">
-            <label className="block text-pink-600 font-medium mb-2">My Interests</label>
+          <div className="mb-10">
+            <label className="section-title block mb-2">My Interests</label>
             <div className="flex flex-wrap gap-2 mb-3">
-              {profile.interests.map((interest, index) => (
-                <div key={index} className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full flex items-center shadow-sm">
+              {profile.interests.map((interest) => (
+                <span
+                  key={interest}
+                  className="interest-chip bg-gradient-to-r from-amber-100 to-orange-100 text-orange-800 px-3 py-1 rounded-full flex items-center shadow-sm"
+                >
                   {interest}
-                  <button onClick={() => removeInterest(interest)} className="ml-2 text-pink-500 hover:text-pink-700">
+                  <button
+                    onClick={() => removeItem("interests", interest)}
+                    className="remove-icon ml-2 hover:text-orange-600"
+                  >
                     <X size={14} />
                   </button>
-                </div>
+                </span>
               ))}
             </div>
+
             <div className="flex mb-3">
               <input
                 type="text"
                 value={newInterest}
                 onChange={(e) => setNewInterest(e.target.value)}
                 placeholder="Add an interest..."
-                className="flex-grow p-3 border border-gray-200 rounded-l-xl focus:ring-2 focus:ring-pink-200 focus:border-pink-400 bg-white text-pink-800"
+                className="flex-grow p-3 border border-orange-100 rounded-l-xl focus:ring-2 focus:ring-orange-200 focus:border-orange-400 bg-white text-gray-700"
               />
               <button
-                onClick={addInterest}
-                className="bg-pink-500 text-white px-4 rounded-r-xl hover:bg-pink-600 flex items-center"
+                onClick={() => addItem("interests", newInterest)}
+                className="add-button bg-gradient-to-r from-orange-500 to-amber-400 text-white px-4 rounded-r-xl hover:from-orange-600 hover:to-amber-500 flex items-center transition-all duration-300"
               >
                 <Plus size={18} />
               </button>
             </div>
-            <p className="text-sm text-pink-400 mb-2">Suggestions:</p>
+
+            <p className="text-sm text-gray-500 mb-2">Suggestions:</p>
             <div className="flex flex-wrap gap-2">
               {interestSuggestions
                 .filter((s) => !profile.interests.includes(s))
                 .slice(0, 8)
-                .map((suggestion, index) => (
+                .map((s) => (
                   <button
-                    key={index}
-                    onClick={() => addSuggestion(suggestion, "interest")}
-                    className="bg-pink-50 hover:bg-pink-100 text-pink-600 px-3 py-1 rounded-full text-sm border border-pink-200 transition"
+                    key={s}
+                    onClick={() => addItem("interests", s)}
+                    className="suggestion-button bg-white border border-amber-200 hover:bg-amber-50 text-amber-700 px-3 py-1 rounded-full text-sm transition-all duration-300"
                   >
-                    {suggestion}
+                    {s}
                   </button>
                 ))}
             </div>
@@ -246,44 +212,52 @@ function InterestsProfile() {
 
           {/* Activities */}
           <div>
-            <label className="block text-purple-600 font-medium mb-2">Activities I'd Enjoy</label>
+            <label className="section-title block mb-2">Activities I’d Enjoy</label>
             <div className="flex flex-wrap gap-2 mb-3">
-              {profile.activities.map((activity, index) => (
-                <div key={index} className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full flex items-center shadow-sm">
+              {profile.activities.map((activity) => (
+                <span
+                  key={activity}
+                  className="interest-chip bg-gradient-to-r from-orange-100 to-amber-100 text-amber-800 px-3 py-1 rounded-full flex items-center shadow-sm"
+                >
                   {activity}
-                  <button onClick={() => removeActivity(activity)} className="ml-2 text-purple-500 hover:text-purple-700">
+                  <button
+                    onClick={() => removeItem("activities", activity)}
+                    className="remove-icon ml-2 hover:text-amber-600"
+                  >
                     <X size={14} />
                   </button>
-                </div>
+                </span>
               ))}
             </div>
+
             <div className="flex mb-3">
               <input
                 type="text"
                 value={newActivity}
                 onChange={(e) => setNewActivity(e.target.value)}
                 placeholder="Add an activity..."
-                className="flex-grow p-3 border border-gray-200 rounded-l-xl focus:ring-2 focus:ring-purple-200 focus:border-purple-400 bg-white text-purple-800"
+                className="flex-grow p-3 border border-amber-100 rounded-l-xl focus:ring-2 focus:ring-amber-200 focus:border-amber-400 bg-white text-gray-700"
               />
               <button
-                onClick={addActivity}
-                className="bg-purple-500 text-white px-4 rounded-r-xl hover:bg-purple-600 flex items-center"
+                onClick={() => addItem("activities", newActivity)}
+                className="add-button bg-gradient-to-r from-amber-400 to-orange-500 text-white px-4 rounded-r-xl hover:from-amber-500 hover:to-orange-600 flex items-center transition-all duration-300"
               >
                 <Plus size={18} />
               </button>
             </div>
-            <p className="text-sm text-purple-400 mb-2">Suggestions:</p>
+
+            <p className="text-sm text-gray-500 mb-2">Suggestions:</p>
             <div className="flex flex-wrap gap-2">
               {activitySuggestions
                 .filter((s) => !profile.activities.includes(s))
                 .slice(0, 8)
-                .map((suggestion, index) => (
+                .map((s) => (
                   <button
-                    key={index}
-                    onClick={() => addSuggestion(suggestion, "activity")}
-                    className="bg-purple-50 hover:bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-sm border border-purple-200 transition"
+                    key={s}
+                    onClick={() => addItem("activities", s)}
+                    className="suggestion-button bg-white border border-orange-200 hover:bg-orange-50 text-orange-700 px-3 py-1 rounded-full text-sm transition-all duration-300"
                   >
-                    {suggestion}
+                    {s}
                   </button>
                 ))}
             </div>

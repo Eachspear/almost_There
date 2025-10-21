@@ -1,0 +1,105 @@
+/* 🌊 Background */
+.login-bg {
+  background: linear-gradient(135deg, #e0fdf4 0%, #e0f2fe 40%, #f0fdfa 100%);
+  font-family: "Inter", sans-serif;
+}
+
+/* 💎 Card */
+.login-card {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(94, 234, 212, 0.2);
+  border-radius: 1.5rem;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 8px 32px rgba(13, 148, 136, 0.25);
+  backdrop-filter: blur(16px);
+  animation: fadeIn 0.5s ease;
+}
+
+/* 🧠 Title + Subtitle */
+.login-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  color: #0d9488;
+  letter-spacing: -0.02em;
+}
+.login-subtitle {
+  font-size: 0.95rem;
+  text-align: center;
+  color: #475569;
+  margin-top: 0.3rem;
+}
+
+/* ✏️ Inputs */
+.login-input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  margin-top: 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(94, 234, 212, 0.4);
+  background: rgba(255, 255, 255, 0.6);
+  font-size: 0.95rem;
+  transition: all 0.25s ease;
+}
+.login-input:focus {
+  border-color: #14b8a6;
+  box-shadow: 0 0 6px rgba(13, 148, 136, 0.35);
+  outline: none;
+}
+
+/* 🔘 Button */
+.login-btn {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 0.85rem;
+  background: linear-gradient(to right, #0d9488, #14b8a6);
+  color: white;
+  font-weight: 600;
+  border-radius: 1rem;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+}
+.login-btn:hover {
+  background: linear-gradient(to right, #0f766e, #0d9488);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(13, 148, 136, 0.3);
+}
+.login-btn.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 🌿 Footer */
+.login-footer {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #475569;
+  margin-top: 1.8rem;
+}
+.login-link {
+  color: #0d9488;
+  font-weight: 600;
+  transition: color 0.25s ease;
+}
+.login-link:hover {
+  color: #14b8a6;
+  text-decoration: underline;
+}
+
+/* ✨ Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

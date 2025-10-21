@@ -1,0 +1,183 @@
+/* 💎 Base Glass Navbar */
+.navbar-glass {
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.75);
+  border-bottom: 1px solid rgba(94, 234, 212, 0.2);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 50;
+  padding: 0.75rem 0;
+  transition: all 0.3s ease;
+}
+
+/* 🌿 Logo */
+.logo-text {
+  background: linear-gradient(to right, #0d9488, #14b8a6);
+  -webkit-background-clip: text;
+  color: transparent;
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+  transition: opacity 0.3s ease;
+}
+.logo-text:hover {
+  opacity: 0.85;
+}
+
+/* 🧭 Links */
+.nav-link {
+  color: #334155;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.25s ease;
+}
+.nav-link:hover {
+  color: #0d9488;
+  transform: translateY(-1px);
+}
+
+/* 🔔 Notification */
+.notif-btn {
+  position: relative;
+  padding: 0.4rem;
+  border-radius: 50%;
+  background: transparent;
+  transition: background 0.25s;
+}
+.notif-btn:hover {
+  background: rgba(13, 148, 136, 0.08);
+}
+.notif-dot {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.3rem;
+  width: 8px;
+  height: 8px;
+  background: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #10b981;
+}
+
+/* 🧊 Dropdowns */
+.notif-dropdown,
+.profile-dropdown {
+  position: absolute;
+  right: 0;
+  margin-top: 0.5rem;
+  width: 16rem;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(94, 234, 212, 0.25);
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 32px rgba(13, 148, 136, 0.25);
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+  z-index: 100;
+}
+
+/* Dropdown content */
+.notif-header {
+  padding: 0.6rem 1rem;
+  font-weight: 600;
+  color: #0d9488;
+  border-bottom: 1px solid rgba(94, 234, 212, 0.25);
+}
+.notif-item,
+.profile-item {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  color: #334155;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+.notif-item:hover,
+.profile-item:hover {
+  background: rgba(13, 148, 136, 0.08);
+  color: #0d9488;
+}
+.notif-empty {
+  text-align: center;
+  padding: 0.8rem;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+/* 👤 Profile Button */
+.profile-btn {
+  padding: 0.4rem;
+  border-radius: 50%;
+  transition: background 0.25s;
+}
+.profile-btn:hover {
+  background: rgba(13, 148, 136, 0.08);
+}
+
+/* 📱 Mobile Menu */
+.mobile-menu {
+  background: rgba(255, 255, 255, 0.95);
+  border-top: 1px solid rgba(94, 234, 212, 0.25);
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+}
+.mobile-item {
+  padding: 0.9rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #334155;
+  font-weight: 500;
+  border-bottom: 1px solid rgba(94, 234, 212, 0.15);
+  transition: background 0.25s ease, color 0.25s ease;
+}
+.mobile-item:hover {
+  background: rgba(13, 148, 136, 0.08);
+  color: #0d9488;
+}
+
+/* 🔴 Logout Button Variant */
+.profile-item.logout {
+  color: #dc2626; /* red-600 */
+  font-weight: 600;
+  border-top: 1px solid rgba(94, 234, 212, 0.15);
+  background: rgba(254, 242, 242, 0.4);
+}
+.profile-item.logout:hover {
+  background: #fee2e2;
+  color: #b91c1c; /* red-700 */
+}
+.profile-item.logout svg {
+  color: #dc2626;
+}
+
+/* ✨ Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.25s ease forwards;
+}
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-slideDown {
+  animation: slideDown 0.3s ease forwards;
+}

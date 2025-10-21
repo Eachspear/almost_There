@@ -26,7 +26,7 @@ const io = new Server(server, {
 const port = 8500;
 
 // MongoDB connect
-mongoose.connect("mongodb://localhost:27017/InstaHang_Users")
+mongoose.connect(process.env.MONGODB)
   .then(() => console.log("Database Connected"))
   .catch(err => console.error("DB error", err));
 

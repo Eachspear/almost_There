@@ -3,7 +3,7 @@ import { useParams, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "./Navbar";
 import { Store } from "react-notifications-component";
-import "./ProfilePage.css";
+import "./styles/ProfilePage.css";
 
 const showNotification = (title, message, type = "success", duration = 3000) => {
   Store.addNotification({
@@ -18,7 +18,7 @@ const showNotification = (title, message, type = "success", duration = 3000) => 
   });
 };
 
-export default function InterestsProfile() {
+export default function ProfilePage() {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -28,14 +28,11 @@ export default function InterestsProfile() {
   const [connecting, setConnecting] = useState(false);
   const [connected, setConnected] = useState(false);
 
-  // ✅ Fetch user profile if page is reloaded or opened directly
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
         const response = await axios.get(`http://localhost:8500/interests/${id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         setUserData(response.data);
       } catch (error) {
@@ -49,14 +46,10 @@ export default function InterestsProfile() {
     if (!userData && id) fetchUserProfile();
   }, [id, userData]);
 
-  // ✅ Correct connection handler (matches your backend /connections/request)
   const handleConnect = async (userId) => {
     try {
       const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/login");
-        return;
-      }
+      if (!token) return navigate("/login");
 
       if (!userId) {
         showNotification("Error", "Invalid user ID", "danger");
@@ -64,25 +57,16 @@ export default function InterestsProfile() {
       }
 
       setConnecting(true);
-      console.log("Sending connection request to user ID:", userId);
-
-      const response = await axios.post(
+      await axios.post(
         `http://localhost:8500/connections/request`,
         { receiverId: userId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      console.log("Connection response:", response.data);
       setConnected(true);
-      showNotification(
-        "Connection Requested",
-        "Connection request sent successfully!"
-      );
+      showNotification("Success", "Connection request sent successfully!");
     } catch (error) {
       console.error("Error sending connection request:", error);
-      if (error.response) {
-        console.error("Error response data:", error.response.data);
-      }
       showNotification(
         "Request Failed",
         error.response?.data?.message || "Failed to send connection request",
@@ -93,88 +77,98 @@ export default function InterestsProfile() {
     }
   };
 
-  if (loading) {
+  if (loading)
     return (
-      <div className="profile-loading-screen">
+      <div className="profile-bg flex flex-col min-h-screen justify-center items-center">
         <Navbar />
-        <p>Loading user profile...</p>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-teal-500 mt-10"></div>
       </div>
     );
-  }
 
-  if (error || !userData) {
+  if (error || !userData)
     return (
-      <div className="profile-error-screen">
+      <div className="profile-bg min-h-screen flex flex-col items-center justify-center text-center">
         <Navbar />
-        <p>{error || "User not found."}</p>
+        <p className="text-gray-700 mb-4">{error || "User not found."}</p>
         <button className="back-btn" onClick={() => navigate("/map")}>
           ⬅ Back to Map
         </button>
       </div>
     );
-  }
 
   return (
-    <div className="profile-page-container">
+    <div className="profile-bg min-h-screen flex flex-col font-sans">
       <Navbar />
 
-      <div className="profile-content">
-        <div className="profile-header">
-          <img
-            src={userData.profilePic || "/default-avatar.png"}
-            alt={userData.userName || "User"}
-            className="profile-avatar"
-          />
-          <div className="profile-header-text">
-            <h2>{userData.displayName || userData.userName}</h2>
-            <p className="profile-username">@{userData.userName?.toLowerCase()}</p>
+      <div className="container mx-auto max-w-3xl px-6 py-10 mt-20">
+        <div className="profile-card rounded-3xl p-10 border border-teal-100 shadow-xl backdrop-blur-lg">
+          {/* Header */}
+          <div className="profile-header flex items-center gap-6 mb-8">
+            <img
+              src={userData.profilePic || "/default-avatar.png"}
+              alt={userData.userName || "User"}
+              className="profile-avatar"
+            />
+            <div>
+              <h2 className="text-3xl font-semibold text-gray-800 mb-1">
+                {userData.displayName || userData.userName}
+              </h2>
+              <p className="text-teal-600 font-medium">
+                @{userData.userName?.toLowerCase()}
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div className="profile-section">
-          <h3>Bio</h3>
-          <p>{userData.bio || "No bio available."}</p>
-        </div>
-
-        {userData.interests && userData.interests.length > 0 && (
-          <div className="profile-section">
-            <h3>Interests</h3>
-            <ul className="profile-list">
-              {userData.interests.map((interest, i) => (
-                <li key={i}>{interest}</li>
-              ))}
-            </ul>
+          {/* Bio */}
+          <div className="profile-section mb-6">
+            <h3>Bio</h3>
+            <p className="text-gray-700 italic">
+              {userData.bio || "No bio available."}
+            </p>
           </div>
-        )}
 
-        {userData.activities && userData.activities.length > 0 && (
-          <div className="profile-section">
-            <h3>Activities</h3>
-            <ul className="profile-list">
-              {userData.activities.map((activity, i) => (
-                <li key={i}>{activity}</li>
-              ))}
-            </ul>
+          {/* Interests */}
+          {userData.interests?.length > 0 && (
+            <div className="profile-section mb-6">
+              <h3>Interests</h3>
+              <ul className="profile-list">
+                {userData.interests.map((interest, i) => (
+                  <li key={i}>{interest}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Activities */}
+          {userData.activities?.length > 0 && (
+            <div className="profile-section mb-6">
+              <h3>Activities</h3>
+              <ul className="profile-list">
+                {userData.activities.map((activity, i) => (
+                  <li key={i}>{activity}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Buttons */}
+          <div className="profile-actions">
+            <button className="back-btn" onClick={() => navigate("/map")}>
+              ⬅ Back
+            </button>
+
+            <button
+              className={`connect-btn ${connected ? "connected" : ""}`}
+              onClick={() => handleConnect(id)}
+              disabled={connecting || connected}
+            >
+              {connected
+                ? "Connected"
+                : connecting
+                ? "Sending..."
+                : "Connect"}
+            </button>
           </div>
-        )}
-
-        {/* ✅ Buttons */}
-        <div className="profile-actions">
-          <button className="back-btn" onClick={() => navigate("/map")}>
-            ⬅ Back to Map
-          </button>
-
-          <button
-            className="connect-btn"
-            onClick={() => handleConnect(id)}
-            disabled={connecting || connected}
-          >
-            {connected
-              ? "Connected"
-              : connecting
-              ? "Sending..."
-              : "Connect"}
-          </button>
         </div>
       </div>
     </div>

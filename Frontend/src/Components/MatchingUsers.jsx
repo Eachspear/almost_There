@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Store } from "react-notifications-component";
 import Navbar from "./Navbar";
-import { User, ArrowRight, Heart } from "lucide-react";
+import { User, ArrowRight, Sparkles } from "lucide-react";
+import "./styles/MatchingUsers.css";
 
 const showNotification = (title, message, type = "success", duration = 3000) => {
   Store.addNotification({
@@ -34,13 +35,11 @@ function MatchingUsers() {
     fetchConnectedAndPendingUsers();
   }, []);
 
-  // ✅ Fetch all connected and pending connection users
   const fetchConnectedAndPendingUsers = async () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      // Fetch accepted connections
       const [connectionsRes, sentRequestsRes] = await Promise.all([
         axios.get("http://localhost:8500/connections", {
           headers: { Authorization: `Bearer ${token}` },
@@ -50,11 +49,8 @@ function MatchingUsers() {
         }),
       ]);
 
-      // ✅ Extract connected user IDs
       const connectedIds =
         connectionsRes.data.connections?.map((conn) => conn.user?.id) || [];
-
-      // ✅ Extract pending (sent) user IDs
       const pendingIds =
         sentRequestsRes.data.requests?.map(
           (req) => req.receiverId?._id || req.receiverId
@@ -62,15 +58,11 @@ function MatchingUsers() {
 
       setConnectedUserIds(connectedIds);
       setPendingUserIds(pendingIds);
-
-      console.log("Connected user IDs:", connectedIds);
-      console.log("Pending user IDs:", pendingIds);
     } catch (error) {
       console.error("Error fetching connected/pending users:", error);
     }
   };
 
-  // ✅ Fetch matching users
   const fetchMatchingUsers = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -86,7 +78,6 @@ function MatchingUsers() {
       });
 
       setUsers(response.data.users || []);
-      console.log("Fetched matching users:", response.data.users);
     } catch (error) {
       console.error("Error fetching matching users:", error);
       showNotification("Error", "Failed to load matching users", "danger");
@@ -95,21 +86,11 @@ function MatchingUsers() {
     }
   };
 
-  // ✅ Handle connect request
   const handleConnect = async (userId) => {
     try {
       const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/login");
-        return;
-      }
-
-      if (!userId) {
-        showNotification("Error", "Invalid user ID", "danger");
-        return;
-      }
-
-      console.log("Sending connection request to user ID:", userId);
+      if (!token) return navigate("/login");
+      if (!userId) return showNotification("Error", "Invalid user ID", "danger");
 
       await axios.post(
         `http://localhost:8500/connections/request`,
@@ -129,28 +110,31 @@ function MatchingUsers() {
     }
   };
 
-  // ✅ Filter out connected and pending users
   const filteredUsers = users.filter(
     (u) => !connectedUserIds.includes(u.userId) && !pendingUserIds.includes(u.userId)
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-pink-100">
+    <div className="matching-bg min-h-screen">
       <Navbar />
       <div className="container mx-auto max-w-4xl px-4 mt-28 pb-10">
-        <h1 className="text-3xl font-bold text-center text-pink-600 mb-8">
-          Find People Who Match Your Vibe 💫
+        <h1 className="matching-title text-center mb-10">
+          Discover People Who Share Your Energy ✨
         </h1>
 
         {loading ? (
           <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-teal-500"></div>
           </div>
         ) : filteredUsers.length === 0 ? (
-          <div className="text-center py-12 text-gray-600">
+          <div className="text-center py-12 bg-white/80 backdrop-blur-sm rounded-2xl shadow-md border border-teal-100">
             <User size={48} className="mx-auto mb-4 text-gray-400" />
-            <h3 className="text-xl font-medium">No new matches</h3>
-            <p className="text-sm">You've already connected or sent requests 💕</p>
+            <h3 className="text-xl font-semibold text-gray-700">
+              No new matches right now
+            </h3>
+            <p className="text-sm text-gray-500 mt-1">
+              You've already connected or sent requests 🌱
+            </p>
           </div>
         ) : (
           <div className="space-y-6">
@@ -159,7 +143,7 @@ function MatchingUsers() {
               return (
                 <div
                   key={index}
-                  className="bg-white border border-pink-100 rounded-2xl p-5 shadow-md hover:shadow-lg transition-all"
+                  className="match-card bg-white/80 backdrop-blur-md rounded-2xl p-6 border border-teal-100 shadow-sm hover:shadow-lg hover:scale-[1.01] transition-all duration-300"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-4">
@@ -168,7 +152,7 @@ function MatchingUsers() {
                           user.user?.UserName || "user"
                         }`}
                         alt="User avatar"
-                        className="w-16 h-16 rounded-full border border-pink-300 shadow-sm"
+                        className="w-16 h-16 rounded-full border-2 border-teal-300 shadow-sm"
                       />
                       <div>
                         <h3 className="text-xl font-semibold text-gray-800">
@@ -178,8 +162,8 @@ function MatchingUsers() {
                           @{user.user?.UserName || "username"}
                         </p>
 
-                        <div className="flex items-center text-sm text-pink-600 mb-3">
-                          <Heart size={16} className="mr-1" />
+                        <div className="flex items-center text-sm text-teal-700 mb-3">
+                          <Sparkles size={16} className="mr-1" />
                           <span>
                             {user.matchCount || user.similarityScore || "N/A"} shared interests
                           </span>
@@ -192,7 +176,7 @@ function MatchingUsers() {
                               {user.interests.slice(0, 5).map((interest, idx) => (
                                 <span
                                   key={idx}
-                                  className="bg-pink-100 text-pink-800 text-xs px-3 py-1 rounded-full font-medium"
+                                  className="tag-chip interest"
                                 >
                                   {interest}
                                 </span>
@@ -208,7 +192,7 @@ function MatchingUsers() {
                               {user.activities.slice(0, 3).map((activity, idx) => (
                                 <span
                                   key={idx}
-                                  className="bg-purple-100 text-purple-800 text-xs px-3 py-1 rounded-full font-medium"
+                                  className="tag-chip activity"
                                 >
                                   {activity}
                                 </span>
@@ -221,7 +205,7 @@ function MatchingUsers() {
 
                     <button
                       onClick={() => handleConnect(userId)}
-                      className="bg-pink-500 hover:bg-pink-600 text-white px-5 py-2 rounded-full font-semibold shadow-md transition flex items-center gap-1"
+                      className="connect-btn"
                     >
                       Connect <ArrowRight size={16} />
                     </button>
@@ -243,17 +227,13 @@ function MatchingUsers() {
             <button
               onClick={() => setLimitValue(Math.max(10, limitValue - 10))}
               disabled={limitValue <= 10}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition ${
-                limitValue <= 10
-                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                  : "bg-white text-pink-600 border border-pink-300 hover:bg-pink-50"
-              }`}
+              className={`limit-btn ${limitValue <= 10 ? "disabled" : ""}`}
             >
               Show Fewer
             </button>
             <button
               onClick={() => setLimitValue(limitValue + 10)}
-              className="px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-full text-sm font-medium transition"
+              className="limit-btn primary"
             >
               Show More
             </button>

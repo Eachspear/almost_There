@@ -1,4 +1,3 @@
-// models/userinterests.js
 const mongoose = require("mongoose");
 
 const userInterestsSchema = new mongoose.Schema({
@@ -21,6 +20,21 @@ const userInterestsSchema = new mongoose.Schema({
     trim: true,
     maxlength: 500
   },
+  // 🧠 Personality traits added here
+  personality: {
+    Openness: { type: Number, default: null },
+    Conscientiousness: { type: Number, default: null },
+    Extraversion: { type: Number, default: null },
+    Agreeableness: { type: Number, default: null },
+    Neuroticism: { type: Number, default: null }
+  },
+  // ✨ New field for readable personality summary
+  personalitySummary: {
+    type: String,
+    trim: true,
+    maxlength: 500,
+    default: ""
+  },
   isProfileComplete: {
     type: Boolean,
     default: false
@@ -33,9 +47,7 @@ const userInterestsSchema = new mongoose.Schema({
     type: [Number],
     default: []
   }
-  
 }, { timestamps: true });
 
 const UserInterests = mongoose.model("UserInterests", userInterestsSchema);
-
 module.exports = UserInterests;

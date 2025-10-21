@@ -11,6 +11,7 @@
   box-shadow: 0 8px 30px rgba(94, 234, 212, 0.15);
   backdrop-filter: blur(18px);
   transition: all 0.3s ease;
+  animation: fadeInUp 0.6s ease;
 }
 .profile-card:hover {
   transform: translateY(-4px);
@@ -67,6 +68,31 @@
   transform: scale(1.05);
 }
 
+/* 💬 Personality Summary Card */
+.personality-summary-card {
+  background: linear-gradient(135deg, rgba(240, 253, 250, 0.95), rgba(209, 250, 229, 0.9));
+  border: 1px solid rgba(45, 212, 191, 0.25);
+  border-radius: 16px;
+  padding: 1.2rem 1.5rem;
+  margin-top: 1.2rem;
+  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.15);
+  backdrop-filter: blur(14px);
+  animation: fadeIn 0.8s ease;
+  transition: all 0.3s ease-in-out;
+}
+.personality-summary-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(45, 212, 191, 0.25);
+}
+.personality-summary-text {
+  font-size: 1.05rem;
+  font-style: italic;
+  font-weight: 500;
+  color: #0f766e;
+  line-height: 1.6;
+  text-align: center;
+}
+
 /* 🎀 Buttons */
 .profile-actions {
   display: flex;
@@ -109,19 +135,24 @@
   cursor: not-allowed;
 }
 
-/* ⏳ Loading + Error */
-.profile-loading-screen,
-.profile-error-screen {
-  min-height: 100vh;
-  text-align: center;
-  color: #444;
-  font-size: 1.1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+/* 🌈 Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-.profile-error-screen p {
-  color: #0d9488;
-  margin-bottom: 1rem;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

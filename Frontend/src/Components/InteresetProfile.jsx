@@ -20,21 +20,33 @@ const showNotification = (title, message, type = "success", duration = 3000) => 
 
 export default function ProfilePage() {
   const { id } = useParams();
-  const location = useLocation();
   const navigate = useNavigate();
-  const [userData, setUserData] = useState(location.state?.user || null);
-  const [loading, setLoading] = useState(!location.state?.user);
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true); // ✅ Always start with loading
   const [error, setError] = useState("");
   const [connecting, setConnecting] = useState(false);
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
+      if (!id) return;
+      
       try {
+        setLoading(true);
         const response = await axios.get(`http://localhost:8500/interests/${id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
-        setUserData(response.data);
+
+        console.log("✅ Full response:", response.data);
+        
+        // ✅ Get the profile data
+        const profileData = response.data.profile || response.data;
+        
+        console.log("✅ Setting userData to:", profileData);
+        console.log("✅ Has personalitySummary?", !!profileData.personalitySummary);
+        console.log("✅ Has summary?", !!profileData.summary);
+        
+        setUserData(profileData);
       } catch (error) {
         console.error("Error fetching user profile:", error);
         setError("Failed to load user profile.");
@@ -43,8 +55,8 @@ export default function ProfilePage() {
       }
     };
 
-    if (!userData && id) fetchUserProfile();
-  }, [id, userData]);
+    fetchUserProfile(); // ✅ Always fetch, don't rely on location.state
+  }, [id]);
 
   const handleConnect = async (userId) => {
     try {
@@ -120,12 +132,24 @@ export default function ProfilePage() {
           </div>
 
           {/* Bio */}
-          <div className="profile-section mb-6">
-            <h3>Bio</h3>
-            <p className="text-gray-700 italic">
-              {userData.bio || "No bio available."}
-            </p>
-          </div>
+          {userData.bio && (
+            <div className="profile-section mb-6">
+              <h3>Bio</h3>
+              <p className="text-gray-700 italic">{userData.bio}</p>
+            </div>
+          )}
+
+          {/* 🧠 Personality Summary */}
+          {(userData.personalitySummary || userData.summary) && (
+            <div className="profile-section mb-8">
+              <h3>🧠 Personality</h3>
+              <div className="personality-summary-card">
+                <p className="personality-summary-text">
+                  {userData.personalitySummary || userData.summary}
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Interests */}
           {userData.interests?.length > 0 && (

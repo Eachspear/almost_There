@@ -3,28 +3,144 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Store } from "react-notifications-component";
 import Navbar from "./Navbar";
-import { Plus, X, Save } from "lucide-react";
+import { Plus, X, Save, RefreshCcw } from "lucide-react";
 import "./styles/InterestsProfile.css";
 
+/* 🌟 Personality Quiz Component */
+const PersonalityQuiz = ({ onResult }) => {
+  const questions = [
+    "I see myself as someone who is talkative.",
+    "I tend to be quiet and reserved.",
+    "I get stressed out easily.",
+    "I am relaxed most of the time.",
+    "I have a vivid imagination.",
+    "I am original and come up with new ideas.",
+    "I am dependable and self-disciplined.",
+    "I tend to be lazy.",
+    "I am considerate and kind to almost everyone.",
+    "I am sometimes rude to others.",
+  ];
+
+  const [answers, setAnswers] = useState(Array(10).fill(3));
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (i, value) => {
+    const updated = [...answers];
+    updated[i] = parseInt(value);
+    setAnswers(updated);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+
+      // Call personality microservice
+      const res = await axios.post(
+        "http://localhost:3001/api/personality/analyze",
+        { answers },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const { personality, summary } = res.data;
+
+      // Forward traits to main backend
+      await axios.post(
+        "http://localhost:8500/interests/updatePersonality",
+        { personality, summary },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (onResult) onResult(personality, summary);
+    } catch (err) {
+      console.error(err);
+      alert("Error analyzing personality. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="personality-quiz bg-white/80 rounded-2xl shadow p-6 mt-10 border border-orange-100 animate-fade-in">
+      <h2 className="text-2xl font-bold text-orange-600 mb-4">🧠 Personality Quiz</h2>
+      <p className="text-sm text-gray-600 mb-4">
+        Answer a few quick questions to discover your personality traits.
+      </p>
+
+      <form onSubmit={handleSubmit}>
+        {questions.map((q, i) => (
+          <div key={i} className="mb-5 transition-all duration-300 hover:scale-[1.01]">
+            <p className="font-medium text-gray-700 mb-2">{q}</p>
+            <input
+              type="range"
+              min="1"
+              max="5"
+              value={answers[i]}
+              onChange={(e) => handleChange(i, e.target.value)}
+              className="w-full accent-orange-500 cursor-pointer"
+            />
+            <div className="scale-labels flex justify-between text-xs text-gray-500">
+              <span>Disagree</span>
+              <span>Neutral</span>
+              <span>Agree</span>
+            </div>
+          </div>
+        ))}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className={`mt-4 px-5 py-2 rounded-full text-white font-semibold transition-all ${
+            loading
+              ? "bg-orange-400 cursor-not-allowed"
+              : "bg-orange-500 hover:bg-orange-600 shadow-md hover:shadow-lg"
+          }`}
+        >
+          {loading ? (
+            <div className="flex items-center justify-center gap-2">
+              <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
+              Analyzing...
+            </div>
+          ) : (
+            "Submit"
+          )}
+        </button>
+      </form>
+    </div>
+  );
+};
+
+/* 🎯 Main Interests Profile Page */
 function InterestsProfile() {
   const navigate = useNavigate();
-  const [profile, setProfile] = useState({ interests: [], activities: [], bio: "" });
+  const [profile, setProfile] = useState({
+    interests: [],
+    activities: [],
+    bio: "",
+    personality: null,
+    personalitySummary: "",
+  });
+
   const [newInterest, setNewInterest] = useState("");
   const [newActivity, setNewActivity] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showQuiz, setShowQuiz] = useState(false);
 
   const interestSuggestions = [
     "Technology", "Music", "Reading", "Travel", "Sports", "Coding", "Gaming",
-    "Photography", "Art", "Fitness", "Movies", "Cooking", "Volunteering", "Design", "Innovation"
+    "Photography", "Art", "Fitness", "Movies", "Cooking", "Volunteering", "Design", "Innovation",
   ];
 
   const activitySuggestions = [
     "Coffee", "Lunch", "Hackathon", "Workshop", "Study Session", "Gym",
-    "Seminar", "Team Project", "Networking", "Open Mic", "Walk", "Conference"
+    "Seminar", "Team Project", "Networking", "Open Mic", "Walk", "Conference",
   ];
 
-  useEffect(() => { fetchUserProfile(); }, []);
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
 
   const fetchUserProfile = async () => {
     try {
@@ -40,6 +156,8 @@ function InterestsProfile() {
           interests: data.profile.interests || [],
           activities: data.profile.activities || [],
           bio: data.profile.bio || "",
+          personality: data.profile.personality || null,
+          personalitySummary: data.profile.personalitySummary || "",
         });
       }
     } catch (err) {
@@ -119,8 +237,8 @@ function InterestsProfile() {
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50 flex flex-col font-sans">
       <Navbar />
       <div className="container mx-auto max-w-3xl px-6 py-10 mt-16">
-        <div className="profile-card bg-white/80 backdrop-blur-lg rounded-3xl shadow-[0_8px_30px_rgba(249,115,22,0.1)] border border-orange-100 p-10 transition-all duration-500 hover:shadow-[0_8px_40px_rgba(249,115,22,0.2)]">
-          
+        <div className="profile-card bg-white/80 backdrop-blur-lg rounded-3xl shadow-[0_8px_30px_rgba(249,115,22,0.1)] border border-orange-100 p-10 transition-all duration-500 hover:shadow-[0_8px_40px_rgba(249,115,22,0.2)] animate-fade-in">
+
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-3xl font-extrabold text-orange-600 tracking-tight">My Profile</h1>
@@ -145,7 +263,7 @@ function InterestsProfile() {
             </button>
           </div>
 
-          {/* Bio */}
+          {/* Bio Section */}
           <div className="mb-10">
             <label className="section-title block mb-2">About Me</label>
             <textarea
@@ -157,7 +275,7 @@ function InterestsProfile() {
             />
           </div>
 
-          {/* Interests */}
+          {/* Interests Section */}
           <div className="mb-10">
             <label className="section-title block mb-2">My Interests</label>
             <div className="flex flex-wrap gap-2 mb-3">
@@ -193,6 +311,7 @@ function InterestsProfile() {
               </button>
             </div>
 
+            {/* Suggestions */}
             <p className="text-sm text-gray-500 mb-2">Suggestions:</p>
             <div className="flex flex-wrap gap-2">
               {interestSuggestions
@@ -202,7 +321,7 @@ function InterestsProfile() {
                   <button
                     key={s}
                     onClick={() => addItem("interests", s)}
-                    className="suggestion-button bg-white border border-amber-200 hover:bg-amber-50 text-amber-700 px-3 py-1 rounded-full text-sm transition-all duration-300"
+                    className="suggestion-button bg-white border border-amber-200 hover:bg-amber-50 text-amber-700 px-3 py-1 rounded-full text-sm transition-all duration-300 hover:scale-[1.05]"
                   >
                     {s}
                   </button>
@@ -210,8 +329,8 @@ function InterestsProfile() {
             </div>
           </div>
 
-          {/* Activities */}
-          <div>
+          {/* Activities Section */}
+          <div className="mb-10">
             <label className="section-title block mb-2">Activities I’d Enjoy</label>
             <div className="flex flex-wrap gap-2 mb-3">
               {profile.activities.map((activity) => (
@@ -246,6 +365,7 @@ function InterestsProfile() {
               </button>
             </div>
 
+            {/* Suggestions */}
             <p className="text-sm text-gray-500 mb-2">Suggestions:</p>
             <div className="flex flex-wrap gap-2">
               {activitySuggestions
@@ -255,12 +375,52 @@ function InterestsProfile() {
                   <button
                     key={s}
                     onClick={() => addItem("activities", s)}
-                    className="suggestion-button bg-white border border-orange-200 hover:bg-orange-50 text-orange-700 px-3 py-1 rounded-full text-sm transition-all duration-300"
+                    className="suggestion-button bg-white border border-orange-200 hover:bg-orange-50 text-orange-700 px-3 py-1 rounded-full text-sm transition-all duration-300 hover:scale-[1.05]"
                   >
                     {s}
                   </button>
                 ))}
             </div>
+          </div>
+
+          {/* Personality Section with Retake Option */}
+          <div className="mt-8">
+            <div className="flex justify-between items-center mb-4">
+              <label className="section-title text-lg font-semibold text-orange-600">Personality Section</label>
+              {profile.personality && (
+                <button
+                  onClick={() => setShowQuiz(!showQuiz)}
+                  className="flex items-center gap-2 px-4 py-2 text-orange-600 border border-orange-300 rounded-full hover:bg-orange-50 transition-all"
+                >
+                  <RefreshCcw size={16} />
+                  {showQuiz ? "Cancel Retake" : "Retake Quiz"}
+                </button>
+              )}
+            </div>
+
+            {/* Show quiz if first time or retaking */}
+            {showQuiz || !profile.personality ? (
+              <PersonalityQuiz
+                onResult={(traits, summary) => {
+                  setProfile((prev) => ({
+                    ...prev,
+                    personality: traits,
+                    personalitySummary: summary,
+                  }));
+                  setShowQuiz(false);
+                }}
+              />
+            ) : (
+              profile.personalitySummary && (
+                <div className="personality-results animate-fade-in">
+                  <div className="bg-gradient-to-br from-orange-50 to-amber-50 p-6 rounded-xl shadow-sm border border-orange-100 text-gray-700">
+                    <p className="text-lg font-medium leading-relaxed">
+                      {profile.personalitySummary}
+                    </p>
+                  </div>
+                </div>
+              )
+            )}
           </div>
         </div>
       </div>

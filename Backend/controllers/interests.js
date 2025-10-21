@@ -58,15 +58,19 @@ async function getUserInterests(req, res) {
       });
     }
     
-    return res.status(200).json({
-      isProfileComplete: profile.isProfileComplete,
-      profile: {
-        interests: profile.interests,
-        activities: profile.activities,
-        bio: profile.bio,
-        lastUpdated: profile.lastUpdated
-      }
-    });
+   // In interests.js controller - getUserInterests function
+return res.status(200).json({
+  isProfileComplete: profile.isProfileComplete,
+  profile: {
+    interests: profile.interests,
+    activities: profile.activities,
+    bio: profile.bio,
+    personality: profile.personality,
+    personalitySummary: profile.personalitySummary,  // ✅ Changed from "summary"
+    lastUpdated: profile.lastUpdated
+  }
+});
+
   } catch (error) {
     console.error("Error fetching interests profile:", error);
     return res.status(500).json({ error: "Server error" });
@@ -312,11 +316,45 @@ async function findUsersWithMatchingInterests(req, res) {
   }
 }
 
+// 🧠 Update personality traits for user
+// 🧠 Update personality traits for user
+async function updatePersonality(req, res) {
+  try {
+    const userId = req.userId;
+    const { personality, summary } = req.body;
+
+    if (!personality) {
+      return res.status(400).json({ error: "Missing personality data" });
+    }
+
+    const updated = await UserInterests.findOneAndUpdate(
+      { userId },
+      {
+        personality,
+        personalitySummary: summary || "",
+        lastUpdated: Date.now(),
+        isProfileComplete: true
+      },
+      { new: true, upsert: true }
+    );
+
+    return res.status(200).json({
+      message: "Personality traits updated successfully",
+      personality: updated.personality,
+      summary: updated.personalitySummary
+    });
+  } catch (error) {
+    console.error("Error updating personality:", error);
+    return res.status(500).json({ error: "Failed to update personality" });
+  }
+}
+
 
 
 module.exports = {
   updateUserInterests,
   getUserInterests,
   checkProfileStatus,
-  findUsersWithMatchingInterests
+  findUsersWithMatchingInterests,
+    updatePersonality
 };

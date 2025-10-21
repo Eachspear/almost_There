@@ -1,157 +1,173 @@
-/* 🌤️ Global Layout */
-body {
-  background: linear-gradient(135deg, #fff8f1 0%, #fff 100%);
-  font-family: 'Inter', 'Poppins', sans-serif;
-  color: #1f2937;
+/* 🧠 Personality Quiz Section */
+.personality-quiz {
+  background: #fffaf5;
+  border: 1px solid #fde68a;
+  border-radius: 18px;
+  padding: 1.75rem;
+  box-shadow: 0 8px 22px rgba(249, 115, 22, 0.1);
+  transition: all 0.4s ease-in-out;
+  transform-origin: top center;
+  animation: fadeInQuiz 0.6s ease forwards;
 }
 
-/* 🔹 Profile Page Container */
-.profile-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  border-radius: 24px;
-  box-shadow: 0 10px 40px rgba(249, 115, 22, 0.15);
-  border: 1px solid rgba(249, 115, 22, 0.15);
-  transition: all 0.3s ease;
+.personality-quiz:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(249, 115, 22, 0.18);
 }
 
-.profile-card:hover {
-  box-shadow: 0 12px 45px rgba(249, 115, 22, 0.25);
-  transform: translateY(-2px);
+/* 🌀 Quiz Fade-In Animation */
+@keyframes fadeInQuiz {
+  from {
+    opacity: 0;
+    transform: translateY(15px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
-/* 🔸 Section Headings */
-.section-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #ea580c;
-  margin-bottom: 0.5rem;
-}
-
-/* 🧠 Bio Section */
-textarea {
-  border-radius: 12px;
-  background: #fffaf3;
-  border: 1px solid #fcd34d;
-  transition: all 0.3s ease;
-}
-
-textarea:focus {
-  border-color: #f59e0b;
-  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
-  background: #fffdf6;
-}
-
-/* 🏷️ Interest & Activity Chips */
-.interest-chip {
-  background: linear-gradient(to right, #fef3c7, #fde68a);
-  color: #92400e;
-  font-weight: 500;
-  border-radius: 9999px;
-  padding: 6px 14px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  box-shadow: 0 2px 5px rgba(249, 115, 22, 0.15);
-  transition: all 0.25s ease-in-out;
-}
-
-.interest-chip:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(249, 115, 22, 0.25);
-}
-
-/* ❌ Remove Icon */
-.remove-icon {
+/* 🎚️ Personality Quiz Slider */
+input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  height: 8px;
+  border-radius: 50px;
+  background: linear-gradient(90deg, #fef3c7 0%, #fde68a 100%);
+  outline: none;
+  transition: background 0.5s ease;
   cursor: pointer;
-  color: #ea580c;
-  opacity: 0.7;
-  transition: all 0.2s;
+  margin-top: 6px;
+  margin-bottom: 8px;
+  position: relative;
 }
 
-.remove-icon:hover {
-  opacity: 1;
-  transform: scale(1.1);
+input[type="range"]:hover {
+  background: linear-gradient(90deg, #fcd34d 0%, #fbbf24 100%);
 }
 
-/* ➕ Add Buttons */
-.add-button {
-  background: linear-gradient(90deg, #f59e0b, #fbbf24);
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+/* 🌕 Glowing Slider Thumb */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #f97316, #ea580c 80%);
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15), 0 0 10px rgba(249, 115, 22, 0.25);
   transition: all 0.25s ease;
 }
 
-.add-button:hover {
-  transform: translateY(-1px);
-  background: linear-gradient(90deg, #f97316, #facc15);
-  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.35);
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+  background: radial-gradient(circle at 30% 30%, #fb923c, #f97316 85%);
+  box-shadow: 0 0 0 6px rgba(249, 115, 22, 0.25), 0 0 16px rgba(249, 115, 22, 0.35);
 }
 
-/* 💾 Save Button */
-.save-button {
-  background: linear-gradient(135deg, #f59e0b, #f97316);
-  color: #fff;
-  border-radius: 9999px;
+/* 🔄 Smooth Color Fill Animation */
+@keyframes fillColor {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+input[type="range"]:active {
+  background-size: 200% 100%;
+  animation: fillColor 0.8s linear infinite alternate;
+}
+
+/* ✨ Trait Question Text */
+.personality-quiz p {
+  font-weight: 500;
+  color: #4b5563;
+  transition: color 0.3s ease;
+}
+
+.personality-quiz p:hover {
+  color: #ea580c;
+  transform: translateX(2px);
+}
+
+/* 🧭 Range Label Animations */
+.personality-quiz .scale-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #9ca3af;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.personality-quiz:hover .scale-labels {
+  opacity: 1;
+}
+
+/* 🧡 Submit Button */
+.personality-quiz button {
+  background: linear-gradient(135deg, #f97316, #f59e0b);
+  border: none;
+  color: white;
   font-weight: 600;
+  border-radius: 9999px;
   padding: 10px 20px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
+  margin-top: 1rem;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
 }
 
-.save-button:hover {
+.personality-quiz button:hover {
   background: linear-gradient(135deg, #ea580c, #fbbf24);
-  box-shadow: 0 6px 18px rgba(249, 115, 22, 0.4);
+  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.35);
   transform: translateY(-2px);
 }
 
-/* 💬 Input Fields */
-input[type="text"] {
-  border-radius: 10px 0 0 10px;
+.personality-quiz button:active {
+  transform: scale(0.97);
+}
+
+/* 🌟 Personality Result Animation */
+.personality-results {
+  background: linear-gradient(145deg, #fff7ed, #fffbf5);
   border: 1px solid #fcd34d;
+  border-radius: 18px;
+  padding: 1.5rem;
+  box-shadow: 0 6px 22px rgba(249, 115, 22, 0.1);
+  animation: fadeInResult 0.7s ease forwards;
+  transform-origin: top center;
+}
+
+@keyframes fadeInResult {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 🎯 Trait Bar Style (Optional visual) */
+.personality-trait {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background: #fffaf1;
-  padding: 10px;
-  color: #374151;
-  transition: all 0.3s ease;
-}
-
-input[type="text"]:focus {
-  border-color: #f59e0b;
-  background: #fffdf7;
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
-}
-
-/* 🧩 Suggestion Buttons */
-.suggestion-button {
-  background: #fff8ec;
-  border: 1px solid #fde68a;
-  color: #92400e;
-  border-radius: 9999px;
-  padding: 6px 14px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.25s ease-in-out;
-}
-
-.suggestion-button:hover {
-  background: linear-gradient(to right, #fcd34d, #fbbf24);
-  color: #78350f;
-  transform: scale(1.05);
-  box-shadow: 0 3px 6px rgba(249, 115, 22, 0.25);
-}
-
-/* ✨ Card Transitions */
-.profile-card section {
-  transition: all 0.3s ease;
-}
-
-.profile-card section:hover {
-  background: rgba(255, 249, 236, 0.6);
+  margin: 6px 0;
+  padding: 8px 12px;
   border-radius: 12px;
-  padding: 0.5rem;
+  border-left: 4px solid #f97316;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.personality-trait:hover {
+  background: #fff6e9;
+  transform: translateX(4px);
+}
+
+.personality-trait strong {
+  color: #ea580c;
+}
+
+.personality-trait span {
+  font-weight: 600;
+  color: #92400e;
 }

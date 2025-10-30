@@ -36,7 +36,6 @@ const PersonalityQuiz = ({ onResult }) => {
     try {
       const token = localStorage.getItem("token");
 
-      // Call personality microservice
       const res = await axios.post(
         "http://localhost:3001/api/personality/analyze",
         { answers },
@@ -45,9 +44,8 @@ const PersonalityQuiz = ({ onResult }) => {
 
       const { personality, summary } = res.data;
 
-      // Forward traits to main backend
       await axios.post(
-        "http://localhost:8500/interests/updatePersonality",
+        "https://backend-3ex6nbvuga-el.a.run.app/interests/updatePersonality",
         { personality, summary },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -147,7 +145,7 @@ function InterestsProfile() {
       const token = localStorage.getItem("token");
       if (!token) return navigate("/login");
 
-      const { data } = await axios.get("http://localhost:8500/interests/", {
+      const { data } = await axios.get("https://backend-3ex6nbvuga-el.a.run.app/interests/", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -180,7 +178,7 @@ function InterestsProfile() {
       setSaving(true);
       const token = localStorage.getItem("token");
 
-      await axios.post("http://localhost:8500/interests/update", profile, {
+      await axios.post("https://backend-3ex6nbvuga-el.a.run.app/interests/update", profile, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -239,13 +237,13 @@ function InterestsProfile() {
       <div className="container mx-auto max-w-3xl px-6 py-10 mt-16">
         <div className="profile-card bg-white/80 backdrop-blur-lg rounded-3xl shadow-[0_8px_30px_rgba(249,115,22,0.1)] border border-orange-100 p-10 transition-all duration-500 hover:shadow-[0_8px_40px_rgba(249,115,22,0.2)] animate-fade-in">
 
-          {/* Header */}
-          <div className="flex justify-between items-center mb-8">
+          {/* 🔝 Sticky Header with Save Button */}
+          <div className="flex justify-between items-center mb-8 sticky top-4 bg-white/80 backdrop-blur-md z-30 p-3 rounded-2xl border border-orange-100 shadow-sm">
             <h1 className="text-3xl font-extrabold text-orange-600 tracking-tight">My Profile</h1>
             <button
               onClick={handleSaveProfile}
               disabled={saving}
-              className={`save-button flex items-center gap-2 px-6 py-2 text-white font-semibold rounded-full transition-all duration-300 ${
+              className={`save-button flex items-center gap-2 px-6 py-2 text-white font-semibold rounded-full transition-all duration-300 bg-gradient-to-r from-orange-500 to-amber-400 ${
                 saving ? "opacity-60 cursor-not-allowed" : "hover:scale-[1.03]"
               }`}
             >
@@ -383,7 +381,7 @@ function InterestsProfile() {
             </div>
           </div>
 
-          {/* Personality Section with Retake Option */}
+          {/* Personality Section */}
           <div className="mt-8">
             <div className="flex justify-between items-center mb-4">
               <label className="section-title text-lg font-semibold text-orange-600">Personality Section</label>
@@ -398,7 +396,6 @@ function InterestsProfile() {
               )}
             </div>
 
-            {/* Show quiz if first time or retaking */}
             {showQuiz || !profile.personality ? (
               <PersonalityQuiz
                 onResult={(traits, summary) => {
@@ -421,6 +418,29 @@ function InterestsProfile() {
                 </div>
               )
             )}
+          </div>
+
+          {/* 🆕 Bottom Save Button */}
+          <div className="flex justify-center mt-10">
+            <button
+              onClick={handleSaveProfile}
+              disabled={saving}
+              className={`save-button flex items-center gap-2 px-8 py-3 text-white font-semibold rounded-full transition-all duration-300 bg-gradient-to-r from-orange-500 to-amber-400 ${
+                saving ? "opacity-60 cursor-not-allowed" : "hover:scale-[1.03]"
+              }`}
+            >
+              {saving ? (
+                <div className="flex items-center">
+                  <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
+                  Saving...
+                </div>
+              ) : (
+                <>
+                  <Save size={18} />
+                  Save Changes
+                </>
+              )}
+            </button>
           </div>
         </div>
       </div>

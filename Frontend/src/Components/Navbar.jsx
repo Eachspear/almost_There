@@ -39,7 +39,7 @@ export default function Navbar() {
 
   const fetchConnectionRequests = async () => {
     try {
-      const response = await axios.get("http://localhost:8500/connections/requests", {
+      const response = await axios.get("https://backend-3ex6nbvuga-el.a.run.app/connections/requests", {
         headers: { Authorization: `Bearer ${token}` },
       });
       return (
@@ -57,7 +57,7 @@ export default function Navbar() {
 
   const fetchUnreadMessages = async () => {
     try {
-      const response = await axios.get("http://localhost:8500/chat/unread", {
+      const response = await axios.get("https://backend-3ex6nbvuga-el.a.run.app/chat/unread", {
         headers: { Authorization: `Bearer ${token}` },
       });
       return (

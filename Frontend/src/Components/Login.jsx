@@ -21,7 +21,7 @@ function Login() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:8500/user/login", {
+      const response = await axios.post("https://backend-3ex6nbvuga-el.a.run.app/user/login", {
         email: formData.email,
         password: formData.password,
       });

@@ -41,10 +41,10 @@ function ConnectionRequests() {
       setLoading(true);
 
       const [receivedResponse, sentResponse] = await Promise.all([
-        axios.get(`http://localhost:8500/connections/requests`, {
+        axios.get(`https://backend-3ex6nbvuga-el.a.run.app/connections/requests`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get(`http://localhost:8500/connections/requests/sent`, {
+        axios.get(`https://backend-3ex6nbvuga-el.a.run.app/connections/requests/sent`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
@@ -68,7 +68,7 @@ function ConnectionRequests() {
       }
 
       await axios.post(
-        `http://localhost:8500/connections/respond`,
+        `https://backend-3ex6nbvuga-el.a.run.app/connections/respond`,
         { connectionId, action },
         { headers: { Authorization: `Bearer ${token}` } }
       );

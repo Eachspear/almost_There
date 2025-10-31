@@ -39,7 +39,7 @@ function Connections() {
       }
 
       setLoading(true);
-      const response = await axios.get("http://localhost:8500/connections", {
+      const response = await axios.get("https://backend-3ex6nbvuga-el.a.run.app/connections", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -59,10 +59,10 @@ function Connections() {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:8500/connections/${connectionId}`, {
+      await axios.delete(`https://backend-3ex6nbvuga-el.a.run.app/connections/${connectionId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      await axios.delete(`http://localhost:8500/chat/history/${friendId}`, {
+      await axios.delete(`https://backend-3ex6nbvuga-el.a.run.app/chat/history/${friendId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

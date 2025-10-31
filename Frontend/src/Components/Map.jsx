@@ -65,7 +65,7 @@ const ProfileCard = ({ user, isCurrentUser = false }) => {
       }
 
       const response = await axios.post(
-        `http://localhost:8500/connect/${targetId}`,
+        `https://backend-3ex6nbvuga-el.a.run.app/connect/${targetId}`,
         {},
         {
           headers: {
@@ -154,7 +154,7 @@ export default function Map() {
   const updateUserLocation = async (latitude, longitude) => {
     try {
       await axios.post(
-        "http://localhost:8500/location/update",
+        "https://backend-3ex6nbvuga-el.a.run.app/location/update",
         { latitude, longitude },
         {
           headers: {
@@ -171,7 +171,7 @@ export default function Map() {
   // Fetch current user profile
   const fetchCurrentUserProfile = async () => {
     try {
-      const response = await axios.get("http://localhost:8500/interests/", {
+      const response = await axios.get("https://backend-3ex6nbvuga-el.a.run.app/interests/", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -197,7 +197,7 @@ export default function Map() {
   // Fetch nearby users
   const fetchNearbyUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:8500/location/nearby", {
+      const response = await axios.get("https://backend-3ex6nbvuga-el.a.run.app/location/nearby", {
         params: { maxDistance: 1000 },
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
@@ -233,7 +233,7 @@ export default function Map() {
   // Fetch similarity matches
   const fetchSimilarityMatchedUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:8500/interests/matches", {
+      const response = await axios.get("https://backend-3ex6nbvuga-el.a.run.app/interests/matches", {
         params: { limit: 50 },
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });

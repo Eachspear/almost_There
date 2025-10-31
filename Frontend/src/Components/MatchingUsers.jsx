@@ -41,10 +41,10 @@ function MatchingUsers() {
       if (!token) return;
 
       const [connectionsRes, sentRequestsRes] = await Promise.all([
-        axios.get("http://localhost:8500/connections", {
+        axios.get("https://backend-3ex6nbvuga-el.a.run.app/connections", {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get("http://localhost:8500/connections/requests/sent", {
+        axios.get("https://backend-3ex6nbvuga-el.a.run.app/connections/requests/sent", {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
@@ -72,7 +72,7 @@ function MatchingUsers() {
       }
 
       setLoading(true);
-      const response = await axios.get(`http://localhost:8500/interests/matches`, {
+      const response = await axios.get(`https://backend-3ex6nbvuga-el.a.run.app/interests/matches`, {
         params: { limit: limitValue },
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -93,7 +93,7 @@ function MatchingUsers() {
       if (!userId) return showNotification("Error", "Invalid user ID", "danger");
 
       await axios.post(
-        `http://localhost:8500/connections/request`,
+        `https://backend-3ex6nbvuga-el.a.run.app/connections/request`,
         { receiverId: userId },
         { headers: { Authorization: `Bearer ${token}` } }
       );

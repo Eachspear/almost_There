@@ -33,7 +33,7 @@ export default function ProfilePage() {
       
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:8500/interests/${id}`, {
+        const response = await axios.get(`https://backend-3ex6nbvuga-el.a.run.app/interests/${id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
 
@@ -70,7 +70,7 @@ export default function ProfilePage() {
 
       setConnecting(true);
       await axios.post(
-        `http://localhost:8500/connections/request`,
+        `https://backend-3ex6nbvuga-el.a.run.app/connections/request`,
         { receiverId: userId },
         { headers: { Authorization: `Bearer ${token}` } }
       );

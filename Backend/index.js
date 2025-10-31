@@ -23,7 +23,6 @@ const io = new Server(server, {
   }
 });
 
-const port = 8500;
 
 // MongoDB connect
 mongoose.connect(process.env.MONGODB)
@@ -132,7 +131,7 @@ io.on("connection", async (socket) => {
   });
 });
 
-// Start server
-server.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+const PORT = process.env.PORT || 8080;
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });

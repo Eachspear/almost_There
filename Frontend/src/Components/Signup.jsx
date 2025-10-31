@@ -26,7 +26,7 @@ function Signup() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:8500/user/signup", formData);
+      const response = await axios.post("https://backend-3ex6nbvuga-el.a.run.app/user/signup", formData);
 
       if (response.status === 201) {
         Store.addNotification({

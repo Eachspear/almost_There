@@ -29,7 +29,7 @@ export default function ChatWindow({ peerId, peerName, onClose }) {
 
     const loadMessages = async () => {
       try {
-        const res = await axios.get(`http://localhost:8500/chat/history/${peerId}`, {
+        const res = await axios.get(`https://backend-3ex6nbvuga-el.a.run.app/chat/history/${peerId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setMessages(res.data?.messages || []);
@@ -121,7 +121,7 @@ export default function ChatWindow({ peerId, peerName, onClose }) {
 
     try {
       const res = await axios.post(
-        `http://localhost:8500/chat/send`,
+        `https://backend-3ex6nbvuga-el.a.run.app/chat/send`,
         { to: peerId, text },
         { headers: { Authorization: `Bearer ${token}` } }
       );

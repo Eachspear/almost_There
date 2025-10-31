@@ -22,6 +22,7 @@
   box-shadow: 0 8px 32px rgba(13, 148, 136, 0.2);
   overflow: hidden;
   animation: slideIn 0.3s ease;
+  max-height: 90vh;
 }
 
 @keyframes slideIn {

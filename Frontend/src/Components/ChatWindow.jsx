@@ -138,9 +138,14 @@ export default function ChatWindow({ peerId, peerName, onClose }) {
 
   // Auto-scroll
   useEffect(() => {
-    const el = document.getElementById("chat-scroll");
-    if (el) el.scrollTop = el.scrollHeight;
-  }, [messages]);
+  const el = document.getElementById("chat-scroll");
+  if (el) {
+    el.scrollTo({
+      top: el.scrollHeight,
+      behavior: "smooth", // smooth scrolling
+    });
+  }
+}, [messages]);
 
   return (
     <div className="chat-overlay">
@@ -167,7 +172,15 @@ export default function ChatWindow({ peerId, peerName, onClose }) {
         </div>
 
         {/* Messages */}
-        <div id="chat-scroll" className="chat-body">
+        <div
+  id="chat-scroll"
+  className="chat-body"
+  style={{
+    height: "65vh",           // fixed height (adjust as needed)
+    overflowY: "auto",        // allows scroll instead of expanding
+    paddingRight: "8px",
+  }}
+>
           {messages.map((m, i) => (
             <div
               key={m._id || i}

@@ -37,7 +37,7 @@ const PersonalityQuiz = ({ onResult }) => {
       const token = localStorage.getItem("token");
 
       const res = await axios.post(
-        "http://localhost:3001/api/personality/analyze",
+        "https://backend-service-871550707721.asia-south1.run.app/api/personality/analyze",
         { answers },
         { headers: { Authorization: `Bearer ${token}` } }
       );
